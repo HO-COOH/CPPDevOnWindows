@@ -6,13 +6,16 @@ You can just use [Visual Studio](https://visualstudio.microsoft.com/), which is 
 Now, you have found the right guide! **Follow the guide and screenshot carefully.** The screenshot are from Windows Sandbox, which is a clean install of Windows 10. **If you followed everything, and can't get it work, open an issue. Let me see how that's even possible!!** 
 
 - [The definitive guide of setting up C/C++ development environment on Windows](#the-definitive-guide-of-setting-up-cc-development-environment-on-windows)
-  - [Download these](#download-these)
+  - [Download these (Mandatory)](#download-these-mandatory)
   - [Install GCC](#install-gcc)
   - [Install CMake](#install-cmake)
   - [Setting up VSCode](#setting-up-vscode)
   - [Setting up CLion](#setting-up-clion)
+  - [Setting up MSVC](#setting-up-msvc)
+  - [Setting up vcpkg](#setting-up-vcpkg)
+  - [Setting up WSL](#setting-up-wsl)
 
-## Download these
+## Download these (Mandatory)
 - [cmake](https://cmake.org/download/), choose the ``Windows win64-x64 Installer`` option
 - [msys2](https://www.msys2.org/)
 
@@ -105,3 +108,24 @@ Rememeber to click ``Allow`` when cmake want to configure the intellisense.
 6. And everything should be working.
 ![](screenshots/19.png)
 
+
+
+## Setting up MSVC
+I can understand you don't want to use Visual Studio because it's slow or for whatever reason. But you **HAVE TO** install Visual Studio on Windows to use `vcpkg`. (Mingw GCC **CAN NOT** be used to build `vcpkg` on Windows at the time being) And MSVC being a Microsoft C/C++ compiler is a legit and good compiler, and you do NOT need to use it with Visual Studio. You can also use it with [cmake](#install-cmake).
+1. You need to download MSVC with Visual Studio [here](https://visualstudio.microsoft.com/downloads/). Choose the ``Community`` option.
+
+2. Run the installer, select these workflows as the following
+  ![](screenshots/21.png)
+
+3. After installation, you will need to register a Microsoft Account to continue using Visual Studio. 
+
+4. After Visual Studio is installed, cmake can detect it as a compiler.
+  ![](screenshots/22.png)
+  ![](screenshots/23.png)
+
+## Setting up vcpkg
+After [Visual Studio](#setting-up-msvc) is installed, you can use `vcpkg`.
+``vcpkg`` is a C/C++ package manager, which makes using libraries much easier (almost as easy as using ``pip`` in python). Follow the guide [here](https://github.com/microsoft/vcpkg#quick-start-windows).
+
+## Setting up WSL
+Setting up WSL is the same as setting up a pure linux environment, therefore it is not discussed here. 
