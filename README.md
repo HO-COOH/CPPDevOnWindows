@@ -11,9 +11,15 @@ Now, you have found the right guide! **Follow the guide and screenshot carefully
   - [Install CMake](#install-cmake)
   - [Setting up VSCode](#setting-up-vscode)
   - [Setting up CLion](#setting-up-clion)
+  - [Install Git](#install-git)
   - [Setting up MSVC](#setting-up-msvc)
   - [Setting up vcpkg](#setting-up-vcpkg)
   - [Setting up WSL](#setting-up-wsl)
+  - [Using a library](#using-a-library)
+  - [Setting up doxygen](#setting-up-doxygen)
+  - [Setting up a package manager](#setting-up-a-package-manager)
+    - [Winget](#winget)
+    - [Chocolatey](#chocolatey)
 
 ## Download these (Mandatory)
 - [cmake](https://cmake.org/download/), choose the ``Windows win64-x64 Installer`` option
@@ -109,6 +115,10 @@ Rememeber to click ``Allow`` when cmake want to configure the intellisense.
 ![](screenshots/19.png)
 
 
+## Install Git
+Most if not all of the development workflow involves using Git. Also, some [cmake](#install-cmake) functions requires Git to be installed. So you'd better install it [here](https://git-scm.com/download/win).
+
+Git can be installed by keep clicking `Next`.![](screenshots/26.png)
 
 ## Setting up MSVC
 I can understand you don't want to use Visual Studio because it's slow or for whatever reason. But you **HAVE TO** install Visual Studio on Windows to use `vcpkg`. (Mingw GCC **CAN NOT** be used to build `vcpkg` on Windows at the time being) And MSVC being a Microsoft C/C++ compiler is a legit and good compiler, and you do NOT need to use it with Visual Studio. You can also use it with [cmake](#install-cmake).
@@ -129,3 +139,50 @@ After [Visual Studio](#setting-up-msvc) is installed, you can use `vcpkg`.
 
 ## Setting up WSL
 Setting up WSL is the same as setting up a pure linux environment, therefore it is not discussed here. 
+
+## Using a library
+Of course you want to use [vcpkg](#setting-up-vcpkg). After you install the library in `vcpkg`, you either:
+- Use `Visual Studio` without **ANY ADDITIONAL CONFIGURATION**
+- Use `cmake` with the instruction provided by `vcpkg` when you install the library.
+
+Below is a complete example of using `vcpkg` to install and use the [boost](https://www.boost.org/) library.
+
+1. Install the library in `vcpkg` with the following command:
+   ```
+   vcpkg install boost:x64-windows
+   ```
+   Note that `vcpkg` will build 32 bit libraries by default, which is NOT probably what you want, so you want to speficy the architecture by adding `:x64-windows`.
+   And you should see the following
+   ![](screenshots/24.png)
+
+2. Note that on Windows, `vcpkg` builds libraries using `MSVC`, so you should also use `MSVC` in order to link sucessfully. Header-only libraries like `boost` may be used with other compilers like `GCC`.
+  - Use it in Visual Studio without doing any additional configuration
+  ![](screenshots/25.png)
+  **Note: Configure the solution achitectural target correctly according to your library. Visual Studio empty project defaults to `x86` but you may installed `x64` library.**
+
+  - Or use it in VSCode/CLion with cmake and cmake tool chain file. See the docs [here](https://github.com/microsoft/vcpkg#using-vcpkg-with-cmake)
+
+## Setting up doxygen
+Writing good documentation is also an essential part of development. The most commonly used documentation generator is [doxygen](https://www.doxygen.nl/download.html). Download `the binary distribution for Windows` and then install it. After it is installed, there will be a GUI frontend called `doxywizard`, which looks like this:
+![](screenshots/27.png)
+To write good documentation, install these plugins:
+- For [VSCode](https://marketplace.visualstudio.com/items?itemName=cschlosser.doxdocgen)
+- For [Visual Studio](https://marketplace.visualstudio.com/items?itemName=FinnGegenmantel.doxygenComments)
+
+Learn the syntax for documentation [here](https://www.doxygen.nl/index.html)
+
+After you documment your code, any decent IDEs/text editors should be able to show the documentation, helping you better understand your own code as well as others.
+![](screenshots/29.png)
+![](screenshots/30.png)
+
+Using doxygen is straight-forward using the GUI, just specify the root directory of your project, configure some settings to your liking, then run it.
+![](screenshots/28.png)
+
+Doxygen generated documentation too ugly? Follow the guide [here](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) to use doxygen with sphinx for a more beautiful documentation.
+
+## Setting up a package manager
+You thought Windows does not have an easy-to-use package manager? You might be wrong.
+
+### Winget
+
+### Chocolatey
