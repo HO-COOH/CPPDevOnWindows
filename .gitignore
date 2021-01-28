@@ -1,5 +1,3 @@
-/CLion-2020.2.4.exe
-/cmake-3.19.0-win64-x64.msi
-/msys2-x86_64-20200903.exe
 /script.txt
-/VSCodeUserSetup-x64-1.51.1.exe
+*.exe
+*.msi
