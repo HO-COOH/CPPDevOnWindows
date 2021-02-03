@@ -17,20 +17,19 @@ Now, you have found the right guide! This guide aims to provide the fullest list
         - [What is MSYS2 and Why?](#what-is-msys2-and-why)
       - [MSVC](#msvc)
     - [Download & Install CMake](#download--install-cmake)
-      - [Download CMake](#download-cmake)
-      - [Install CMake](#install-cmake)
       - [What is CMake and Why?](#what-is-cmake-and-why)
     - [IDEs](#ides)
       - [Setting up CLion](#setting-up-clion)
       - [Setting up QT creator](#setting-up-qt-creator)
       - [Setting up Cevelop](#setting-up-cevelop)
       - [Setting up Visual Studio](#setting-up-visual-studio)
+      - [Setting up Eclipse](#setting-up-eclipse)
     - [Text editors](#text-editors)
       - [Setting up VSCode](#setting-up-vscode)
       - [Setting up Vim](#setting-up-vim)
       - [Setting up Sublime](#setting-up-sublime)
       - [Setting up Atom](#setting-up-atom)
-    - [Setting up Git](#setting-up-git)
+  - [Source control](#source-control)
   - [Debugging](#debugging)
     - [Debugging in VSCode](#debugging-in-vscode)
     - [Debugging in CLion](#debugging-in-clion)
@@ -43,21 +42,29 @@ Now, you have found the right guide! This guide aims to provide the fullest list
   - [Unit Testing](#unit-testing)
     - [Google Test](#google-test)
     - [Microsoft Unit Test](#microsoft-unit-test)
+    - [CTest](#ctest)
   - [Documentation](#documentation)
     - [Setting up doxygen](#setting-up-doxygen)
   - [Setting up a system-wide package manager](#setting-up-a-system-wide-package-manager)
     - [Winget](#winget)
     - [Chocolatey](#chocolatey)
   - [Setting up WSL](#setting-up-wsl)
+  - [Addtional Tooling](#addtional-tooling)
+    - [Resharper](#resharper)
+    - [Clang-tidy](#clang-tidy)
 
 ## Setting up development environment
 This section describes the steps to 
-1. Download & Install a C++ compiler
-2. Download & Install CMake
-3. Download & Install an IDE/text editor
+1. [Download & Install a C++ compiler](#download--install-a-c-compiler)
+2. [Download & Install CMake](#download--install-cmake)
+3. [Download & Install an IDE/text editor](#ides)
 4. Create a project in various IDEs/text editors and start writing code
 
 ### Download & Install a C++ compiler
+
+![](screenshots/JBstats/Compilers.png)
+
+This guide will cover the installation of `GCC`, `Clang` and `MSVC`.
 
 #### GCC & Clang
 ##### Download & Install MSYS2
@@ -66,6 +73,8 @@ This section describes the steps to
 Just launch the installer and keep clicking "Next"
 
 ##### Install GCC
+If you also want to install `clang`, skip this part and go directly to [Install Clang](#install-clang),  because GCC is a dependency of Clang (on MSYS2) and will be automatically installed when you install clang.
+
 1. Run MSYS2, type the following command:
 ```
 pacman -Syu
@@ -104,10 +113,54 @@ And type `y` to also install ``gdb``.
 7. Click ``New`` and copy ``C:\msys64\mingw64\bin`` to the new entry.
 ![](screenshots/5.png)
 
-8. Click ``OK`` to close all windows. Now you finished installing GCC.
+8. Click ``OK`` to close all windows. Now you finished installing GCC. Open any shell such as `cmd` and type in `gcc --version` and you shall see the following: ![](screenshots/Compiler/gcc/gcc-version.png)
 
 ##### Install Clang
+Installing Clang will also automatically install `GCC` (on MSYS2).
 
+1. Run MSYS2, type the following command:
+```
+pacman -Syu
+```
+`pacman` is the package manager used by MSYS2. `-S` means "sync". `-y` means "download fresh package databases from the server". `-u` means "upgrade installed packages". 
+
+This command will update the packages info, so you get the latest packages. It will prompt you like this, and you type ``y`` and hit enter.
+![](./screenshots/1.png)
+
+3. Then it will prompt you `` To complete this update all MSYS2 processes including this terminal will be closed. Confirm to proceed [Y/n]``, type `y` and hit enter, and it will close the window after the update is done.
+
+
+4. Relaunch MSYS2 from your start menu. Type:
+```
+pacman -S mingw-w64-x86_64-clang
+```
+like this, type `y` and hit enter to install clang
+![](screenshots/Compiler/clang/clang.png)
+
+And then type:
+```
+pacman -S mingw-w64-x86_64-make
+```
+And type `y` to also install ``make``.
+
+And then type:
+```
+pacman -S mingw-w64-x86_64-gdb
+```
+And type `y` to also install ``gdb``.
+
+5. Now search for ``environment variable`` and open it
+![](screenshots/3.png)
+
+6. Click ``Environment Variables``, find ``Path`` in ``System variables``, double click to open the setting.
+![](screenshots/4.png)
+
+7. Click ``New`` and copy ``C:\msys64\mingw64\bin`` to the new entry.
+![](screenshots/5.png)
+
+8. Click ``OK`` to close all windows. Now you finished installing clang. Open any shell such as `cmd` and type in `clang --version` and you shall see the following: ![](screenshots/Compiler/clang/clang-version.png)
+
+Note: `Clang` and `GCC` is installed to the same directory, eg. under `C:\msys64\mingw64\bin`. Don't be confused by the directory `C:\msys64\clang64`. It is an empty folder.
 
 ##### What is MSYS2 and Why?
 > MSYS2 is a collection of tools and libraries providing you with an easy-to-use environment for building, installing and running native Windows software.
@@ -119,19 +172,22 @@ But basically, we use its implementation of MingW(Minimalist GNU for Windows), w
 MSYS2 is actively maintained and provides an up-to-date GCC toolchain as well as many others.
 
 #### MSVC
-MSVC is Microsoft Visual C++ compiler. And you know what? You do NOT have to install Visual Studio in order to get MSVC. However, it is easier to just install Visual Studio and you can skip to [here](#setting-up-visual-studio) if you like that.
+MSVC is Microsoft Visual C++ compiler. And you know what? You do NOT have to install Visual Studio in order to get MSVC. However, if you also want Visual Studio, skip to [setting up visual studio](#setting-up-visual-studio) directly.
 1. Download [MSVC](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019), select `Build Tools for Visual Studio 2019`
 2. Launch the installer and select these workflows
   ![](screenshots/32.png)
+3. You have finished installing MSVC. Click `Launch` and type `cl` and you should see this:
+  ![](screenshots/Compiler/MSVC/InstallFinish.png)
+  
+  It is not recommended to add `MSVC` directly to system `PATH` because each compiler toolchain for different architecture has its own version. 
+
+  This command prompt is specific to 64bit Windows architecture and has set some temporary environment variables. You can find it in `Start` -> `Visual Studio 2019` -> `Developer Command Prompt for VS 2019` like this: ![](screenshots/Compiler/MSVC/Location.png)
 
 
 ### Download & Install CMake
+1. [Download here](https://cmake.org/download/), choose the ``Windows win64-x64 Installer`` option
 
-#### Download CMake
-[Download here](https://cmake.org/download/), choose the ``Windows win64-x64 Installer`` option
-
-#### Install CMake
-Launch the insatller, when you see this screen, choose ``Add CMake to the system PATH for all users``
+2. Launch the insatller, when you see this screen, choose ``Add CMake to the system PATH for all users``
 ![](screenshots/6.png)
 Now you finished installing cmake.
 
@@ -148,6 +204,10 @@ In reality, some of [the most loved IDEs/text editors](#setting-up-vscode) reall
 
 ### IDEs
 
+![](screenshots/JBstats/IDE&Editors.png)
+
+This guide will cover setting up `Visual Studio`, `CLion`, `QtCreator`, `Cevelop (based on Eclipse)` and `Eclipse`.
+
 #### Setting up CLion
 1. Download [clion](https://www.jetbrains.com/clion/download/#section=windows)
 2. Launch the installer, keep clicking "Next". When you see the following screen, I strongly recommend you to select ``Add "Open Folder as Project"``.
@@ -161,11 +221,28 @@ In reality, some of [the most loved IDEs/text editors](#setting-up-vscode) reall
 5. Create a new C++ executable or C executable on the left
 ![](screenshots/20.png)
 
-6. And everything should be working.
+6. Clion will auto generate a "Hello world" project and everything should be working.
 ![](screenshots/19.png)
 
 #### Setting up QT creator
+1. Download QT installer [here](https://www.qt.io/download-qt-installer?hsCtaTracking=99d9dd4f-5681-48d2-b096-470725510d34%7C074ddad0-fdef-4e53-8aa8-5e8a876d6ab4)
+2. Launch the installer and you will need to either sign in or create a qt account
+3. When you see this, click `Custom Install`.
+   ![](screenshots/IDE/QT/Install.png)
+4. When you see this, click `Deselect All`, because we only intend to use it as a standalone IDE, aka `Qt Creator`. If you want to do Qt development, select the component to your need.
+   ![](screenshots/IDE/QT/Install2.png)
+5. After the installation, run `Qt Creator` -> `New File or Project` -> `Non-Qt Project` -> `Plain C++ Application` (this actually doesn't matter, you can always change to a C application in the `CMakeLists.txt` file) -> Choose `CMake` as the build system -> select `all kits` (this will include the different build types in CMake). `Qt Creator` should create a simple "Hello world" program for you, like this:
+   ![](screenshots/IDE/QT/NewProject.png)
+   ![](screenshots/IDE/QT/NewProject2.png)
+   ![](screenshots/IDE/QT/NewProject3.png)
+   ![](screenshots/IDE/QT/NewProject4.png)
+   ![](screenshots/IDE/QT/NewProject5.png)
+6. Click the `Run` button, and it should run
+   ![](screenshots/IDE/QT/RunProject.png)
 
+Note: If there is error during CMake's configure, go to `Tools` -> `Options` -> `Kits` -> `Desktop(default)`, and make sure the C and C++ compiler is in `C:\msys64\mingw64\bin` instead of `C:\msys64\usr\bin`.
+![](screenshots/IDE/QT/Settings.png)
+![](screenshots/IDE/QT/Settings2.png)
 
 #### Setting up Cevelop
 1. Download and install [Java Runtime Environment](https://www.java.com/en/download/manual.jsp), select `Windows Offline (64bit)`
@@ -182,11 +259,27 @@ In reality, some of [the most loved IDEs/text editors](#setting-up-vscode) reall
 2. Run the installer, select these workflows
   ![](screenshots/21.png)
 
-3. After installation, you will need to register a Microsoft Account to continue using Visual Studio. 
+3. After installation, you are prompt to restart your computer. And then you will need to register a Microsoft Account to continue using Visual Studio. 
+
+4. Run Visual Studio, select `Create a new project` -> `Empty Project/Console App`, and select `Place solution and project in the same directory`.
+  ![](screenshots/IDE/VisualStudio/CreateProject.png)
+  ![](screenshots/IDE/VisualStudio/CreateProject2.png)
+  ![](screenshots/IDE/VisualStudio/CreateProject3.png)
+  The only difference between `Empty Project` and `Console App` is the latter will provide you with a "Hello world" program and that's it! All the default include directories and default linked runtime libraries are the same!
+  
+  - If you choose to create `Empty Project`, right click on the `<Project Name>` -> `Add` -> `New item` -> `C++ source file` -> `Add`, like this: 
+  ![](screenshots/IDE/VisualStudio/EmptyProject1.png)
+  ![](screenshots/IDE/VisualStudio/EmptyProject2.png)
+  Then write a simple "Hello world" program and hit `ctrl+f5` to compile and run it, and you shall see this:
+  ![](screenshots/IDE/VisualStudio/EmptyProject3.png)
+
+  - If you choose to create `Console App`, you shall see the already created "Hello world". Hit `ctrl+f5` to compile and run the program and you shall see this: ![](screenshots/IDE/VisualStudio/ConsoleApplication.png)
 
 After Visual Studio is installed, cmake can detect it as a compiler.
   ![](screenshots/22.png)
   ![](screenshots/23.png)
+
+#### Setting up Eclipse
 
 ### Text editors
 
@@ -229,7 +322,7 @@ Rememeber to click ``Allow`` when cmake want to configure the intellisense.
 #### Setting up Atom
 
 
-### Setting up Git
+## Source control
 Most if not all of the development workflow involves using Git. Also, some [cmake](#install-cmake) functions requires Git to be installed. So you'd better install it [here](https://git-scm.com/download/win).
 
 Git can be installed by keep clicking `Next`.![](screenshots/26.png)
@@ -238,10 +331,22 @@ Git can be installed by keep clicking `Next`.![](screenshots/26.png)
 
 ## Debugging
 This section describes how to debug in various IDEs/text editors.
+
 ### Debugging in VSCode
+To launch the debugger in VSCode, click the cmake project menu -> right click on the `<target name>` -> `Debug` like this: ![](screenshots/Editor/VSCode/LaunchDebugger.png)
+
+See more documentation for VSCode's debugging UI [here](https://code.visualstudio.com/docs/cpp/cpp-debug#_windows-debugging-with-gdb), except for the part that sets `launch.json` because the [CMake](#setting-up-vscode) tools already handles everything :)
+
 ### Debugging in CLion
+To launch the debugger, click here ![](screenshots/IDE/CLion/Debug.png)
+
+For more, see documentation [here](https://www.jetbrains.com/help/clion/debugging-code.html)
+
 ### Debugging in Visual Studio
+
+
 ### Debugging in QT
+
 ### Debugging in Cevelop
 
 ## Using libraries
@@ -279,10 +384,15 @@ Afrer the library finishes installing, you can either:
 
 ## Unit Testing
 
+![](screenshots/JBstats/UnitTests.png)
+
+
 ### Google Test
 Following setting up `vcpkg`, we can easily install the library necessary for [unit testing](https://en.wikipedia.org/wiki/Unit_testing). Here we demonstrate it with [google test](https://github.com/google/googletest), a famous and widely supported by IDEs/text editors unit testing framework for C++.
 
 ### Microsoft Unit Test
+
+### CTest
 
 
 ## Documentation
@@ -314,3 +424,10 @@ You thought Windows does not have an easy-to-use package manager? You might be w
 
 ## Setting up WSL
 Setting up WSL is the same as setting up a pure linux environment, therefore it is not discussed here. 
+
+## Addtional Tooling
+
+### Resharper
+Resharper is an extension for Visual Studio that can greatly benefit your productivity.
+
+### Clang-tidy
