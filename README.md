@@ -23,6 +23,8 @@ Now, you have found the right guide! This guide aims to provide the fullest list
       - [Setting up QT creator](#setting-up-qt-creator)
       - [Setting up Cevelop](#setting-up-cevelop)
       - [Setting up Visual Studio](#setting-up-visual-studio)
+        - [Full package](#full-package)
+        - [Standalone IDE](#standalone-ide)
       - [Setting up Eclipse](#setting-up-eclipse)
     - [Text editors](#text-editors)
       - [Setting up VSCode](#setting-up-vscode)
@@ -52,6 +54,8 @@ Now, you have found the right guide! This guide aims to provide the fullest list
   - [Addtional Tooling](#addtional-tooling)
     - [Resharper](#resharper)
     - [Clang-tidy](#clang-tidy)
+    - [Clang-format](#clang-format)
+    - [Incredibuild](#incredibuild)
 
 ## Setting up development environment
 This section describes the steps to 
@@ -179,10 +183,14 @@ MSVC is Microsoft Visual C++ compiler. And you know what? You do NOT have to ins
 3. You have finished installing MSVC. Click `Launch` and type `cl` and you should see this:
   ![](screenshots/Compiler/MSVC/InstallFinish.png)
   
-  It is not recommended to add `MSVC` directly to system `PATH` because each compiler toolchain for different architecture has its own version. 
+  Do NOT try to add `MSVC` directly to system `PATH` because each compiler toolchain for different architecture has its own version. 
 
   This command prompt is specific to 64bit Windows architecture and has set some temporary environment variables. You can find it in `Start` -> `Visual Studio 2019` -> `Developer Command Prompt for VS 2019` like this: ![](screenshots/Compiler/MSVC/Location.png)
 
+
+After MSVC is installed, cmake can detect it as a compiler.
+  ![](screenshots/22.png)
+  ![](screenshots/23.png)
 
 ### Download & Install CMake
 1. [Download here](https://cmake.org/download/), choose the ``Windows win64-x64 Installer`` option
@@ -244,16 +252,28 @@ Note: If there is error during CMake's configure, go to `Tools` -> `Options` -> 
 ![](screenshots/IDE/QT/Settings.png)
 ![](screenshots/IDE/QT/Settings2.png)
 
+If you installed `Clang` you shall see it in the compiler selection menu:
+
+![](screenshots/IDE/QT/Kits.png)
+
 #### Setting up Cevelop
 1. Download and install [Java Runtime Environment](https://www.java.com/en/download/manual.jsp), select `Windows Offline (64bit)`
 2. Download [Cevelop](https://cevelop.com/download/), select `Windows`.
 3. Extract Cevelop and run `cevelop.exe`
    
    If you see this ![](screenshots/33.png), you may incorrectly installed the 32 bit version of Java Runtime Environment! Go back and reinstalled the 64 bit version!
-4. 
+
+4. The first time running it, it will prompt you to choose a default workspace directory. Change it to where you like. Click `File` -> `New` -> `C/C++ Project` -> `CMake Project` -> `Finish` like this:
+   ![](screenshots/IDE/Cevelop/NewProject1.png)
+   ![](screenshots/IDE/Cevelop/NewProject2.png)
+   ![](screenshots/IDE/Cevelop/NewProject3.png)
+
+5. Click `Run` to run.
+   ![](screenshots/IDE/Cevelop/RunProject.png)
 
 #### Setting up Visual Studio
-
+You can install Visual Studio as a standalone IDE or as a whole package including compiler, toolchain and windows sdk.
+##### Full package
 1. Download [Visual studio](https://visualstudio.microsoft.com/downloads/). Choose the ``Community`` option.
 
 2. Run the installer, select these workflows
@@ -275,9 +295,32 @@ Note: If there is error during CMake's configure, go to `Tools` -> `Options` -> 
 
   - If you choose to create `Console App`, you shall see the already created "Hello world". Hit `ctrl+f5` to compile and run the program and you shall see this: ![](screenshots/IDE/VisualStudio/ConsoleApplication.png)
 
-After Visual Studio is installed, cmake can detect it as a compiler.
-  ![](screenshots/22.png)
-  ![](screenshots/23.png)
+##### Standalone IDE
+If you install Visual Studio as a standalone IDE without installing MSVC compiler toolchains, you can use it with CMake. If you have installed MSVC compiler toolchain, you can use it with Visual Studio solution just as it's a [full install](#full-package) like above. Here I introduce how to use it with CMake, **without MSVC**.
+1. Download [Visual studio](https://visualstudio.microsoft.com/downloads/). Choose the ``Community`` option.
+
+2. Run the installer, select these workflows and deselect all the optionals on the right, like this
+  ![](screenshots/IDE/VisualStudio/InstallStandalone.png)
+
+3. After installation, you need to register a Microsoft Account to continue using Visual Studio.
+
+4. Run Visual Studio, select `Create a new project` -> `CMake Project` -> select `Place Project under the same directory` -> `Create`, like this:
+  ![](screenshots/IDE/VisualStudio/CreateProject.png)
+   ![](screenshots/IDE/VisualStudio/CMakeProject1.png)
+   ![](screenshots/IDE/VisualStudio/CMakeProject2.png)
+5. Visual Studio will auto generate a "Hello world" project for you, and it can successfully configure the project and compile because CMake can detect the installed `GCC`. However, it will have incorrect include errors.
+   ![](screenshots/IDE/VisualStudio/CMakeProject3.png)
+6. To solve this error, click on the configuration menu -> `Manage Configurations` -> click the add button -> select `Mingw64-Debug` -> click on the previous old configuration and click delete button
+   ![](screenshots/IDE/VisualStudio/CMakeProject4.png)
+   ![](screenshots/IDE/VisualStudio/CMakeProject5.png)
+   ![](screenshots/IDE/VisualStudio/CMakeProject6.png)
+7. Hit `ctrl+s` to save this configuration, then the include error should go away.
+   ![](screenshots/IDE/VisualStudio/CMakeProject9.png)
+
+Note: If for some reason, Visual Studio doesn't detect the right MingW version, you will still get include errors. You need to edit the `CMakeSettings.json` and correct the MingW version, like this:
+![](screenshots/IDE/VisualStudio/CMakeProject7.png)
+![](screenshots/IDE/VisualStudio/CMakeProject8.png)
+
 
 #### Setting up Eclipse
 
@@ -323,9 +366,19 @@ Rememeber to click ``Allow`` when cmake want to configure the intellisense.
 
 
 ## Source control
-Most if not all of the development workflow involves using Git. Also, some [cmake](#install-cmake) functions requires Git to be installed. So you'd better install it [here](https://git-scm.com/download/win).
 
-Git can be installed by keep clicking `Next`.![](screenshots/26.png)
+Most if not all of the development workflow involves using `Git`. Also, some of CMake's functionalities requires Git to be installed. And you also need Git to install `vcpkg`. You can install `Git` either by using the installer or using a package manager, like `MSYS2` which we just used above to install `GCC` and `Clang`. 
+- Install by using the installer
+  1. Download the installer [here](https://git-scm.com/download/win) and then it can be installed by keep clicking `Next`.![](screenshots/26.png)
+- Install by using `MSYS2`
+  1. Run `MSYS2`, type in the command
+    ```
+    pacman -S git
+    ```
+    And then type `Y` to install.
+
+  2. Search for ``environment variable`` and open it -> ``Environment Variables``, find ``Path`` in ``System variables``, double click to open the setting -> click ``New`` and copy ``C:\msys64\usr\bin`` to the new entry.
+  ![](screenshots/SourceControl/Git.png)
 
 
 
@@ -352,13 +405,14 @@ For more, see documentation [here](https://www.jetbrains.com/help/clion/debuggin
 ## Using libraries
 
 ### Setting up vcpkg
-You **HAVE TO** install Visual Studio on Windows to use `vcpkg`. (Mingw GCC **CAN NOT** be used to build `vcpkg` on Windows at the time being)
-After [Visual Studio](#setting-up-msvc) is installed, you can use `vcpkg`.
-``vcpkg`` is a C/C++ package manager, which makes using libraries much easier (almost as easy as using ``pip`` in python). Follow the guide [here](https://github.com/microsoft/vcpkg#quick-start-windows).
+``vcpkg`` is a C/C++ package manager, which makes using libraries much easier (almost as easy as using ``pip`` in python).
+
+
+You **HAVE TO** install MSVC or Visual Studio on Windows to use `vcpkg`. (Mingw GCC **CAN NOT** be used to build `vcpkg` on Windows at the time being). After [MSVC](#setting-up-msvc) is installed, you can follow the guide [here](https://github.com/microsoft/vcpkg#quick-start-windows) to set it up.
 
 
 ### Using a library
-Of course you want to use [vcpkg](#setting-up-vcpkg), which provides you with an experience of using `pip` with python or `npm` with Javascript. After you install the library in `vcpkg`, you either:
+After you install the library in `vcpkg`, you either:
 - Use `Visual Studio` without **ANY ADDITIONAL CONFIGURATION**
 - Use `cmake` with the instruction provided by `vcpkg` when you install the library.
 
@@ -383,12 +437,34 @@ Afrer the library finishes installing, you can either:
 - Or use it in VSCode/CLion with cmake and cmake tool chain file. See the docs [here](https://github.com/microsoft/vcpkg#using-vcpkg-with-cmake)
 
 ## Unit Testing
+[What is unit testing?](https://en.wikipedia.org/wiki/Unit_testing)
 
 ![](screenshots/JBstats/UnitTests.png)
 
 
 ### Google Test
-Following setting up `vcpkg`, we can easily install the library necessary for [unit testing](https://en.wikipedia.org/wiki/Unit_testing). Here we demonstrate it with [google test](https://github.com/google/googletest), a famous and widely supported by IDEs/text editors unit testing framework for C++.
+[google test](https://github.com/google/googletest) is a famous and widely supported by IDEs/text editors unit testing framework for C++.
+
+You can get google test by these ways
+- Using `vcpkg`: Following setting up `vcpkg`, we can easily install the library by
+  ```
+  vcpkg install gtest:x64-windows
+  ```
+  Note that if your application is targeted to 32 bit, use this command instead
+  ```
+  vcpkg install gtest
+  ```
+
+- Using `MSYS2`: Note that this can only be used with `GCC & Clang` compiler from `MSYS2`.
+  ```
+  pacman -S pacman -S mingw-w64-x86_64-gtest
+  ```
+  After that, add the following lines to your `CMakeLists.txt`:
+  ```cmake
+  find_package(GTest REQUIRED)
+  target_link_libraries(<Your target> PRIVATE GTest::Main)
+  ```
+  ![](screenshots/UnitTest/GTest/MSYS2.VSCode.png)
 
 ### Microsoft Unit Test
 
@@ -428,6 +504,11 @@ Setting up WSL is the same as setting up a pure linux environment, therefore it 
 ## Addtional Tooling
 
 ### Resharper
-Resharper is an extension for Visual Studio that can greatly benefit your productivity.
+Resharper is a non-free extension for Visual Studio that can greatly benefit your productivity. Download [here](https://www.jetbrains.com/resharper-cpp/).
 
 ### Clang-tidy
+
+### Clang-format
+
+### Incredibuild
+
