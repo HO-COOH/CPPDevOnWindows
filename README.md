@@ -551,18 +551,20 @@ After installing the library,
     
     Then you should be able to write the test source file without the `main` function, and build in both configurations like this
     - Debug build
-    ![](screenshots/UnitTest/GTest/VSBuildMain2.png)
+    ![](screenshots/UnitTest/GTest/VSBuildMainDebug.png)
     - Release build
     ![](screenshots/UnitTest/GTest/VSBuildMainRelease.png)
 
-- If you use CMake, you can make use of `CTest` built-in to Cmake as a test runner to run your google test,
-   which is supported by most IDE/editors you will see below. A minimum `CMakeLists.txt` is like:
+- If you use CMake, regardless of whether you installed `Google Test` library from `vcpkg` or `MSYS2`, 
+  you can make use of `CTest` built-in to Cmake as a test runner to run your google test,
+  which is supported by most IDE/editors you will see below.
+  A minimum `CMakeLists.txt` is like:
 ```cmake
 cmake_minimum_required(VERSION 3.10.0)
 
 project(<project name> VERSION 0.1.0)
 
-find_package(GTest REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 enable_testing()
 include(GoogleTest) #for gtest_discover_tests() function
 
@@ -576,9 +578,11 @@ cmake_minimum_required(VERSION 3.10.0)
 
 project(<project name> VERSION 0.1.0)
 
+find_package(GTest CONFIG REQUIRED)
 add_executable(<test target name> test.cpp) #This is the testing executable
 target_link_libraries(<test target name> PRIVATE GTest::gtest GTest::gtest_main) #Link it to the google test library
 ```
+![](screenshots/UnitTest/GTest/MSYS2.VSCode.png)
 
 #### Integration with Visual Studio
 
