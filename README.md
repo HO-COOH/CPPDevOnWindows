@@ -522,7 +522,7 @@ You can get google test by these ways
   After that, add the following lines to your `CMakeLists.txt`:
   ```cmake
   find_package(GTest REQUIRED)
-  target_link_libraries(<Your target> PRIVATE GTest::Main)
+  target_link_libraries(<Your target> PRIVATE GTest::gtest GTest::gtest_main)
   ```
   ![](screenshots/UnitTest/GTest/MSYS2.VSCode.png)
 
@@ -572,9 +572,9 @@ find_package(GTest REQUIRED)
 enable_testing()
 include(GoogleTest) #for gtest_discover_tests() function
 
-add_executable(test test.cpp) #This is the testing executable
-target_link_libraries(test PRIVATE GTest::Main) #Link it to the google test library
-gtest_discover_tests(test)  #integrate google test with ctest to this testing executable
+add_executable(<test target name> test.cpp) #This is the testing executable
+target_link_libraries(<test target name> PRIVATE GTest::gtest GTest::gtest_main) #Link it to the google test library
+gtest_discover_tests(<test target name>)  #integrate google test with ctest to this testing executable
 ```
 - Or you simply want a testing executable, so you don't bother with `CTest`.
 ```cmake
@@ -582,13 +582,22 @@ cmake_minimum_required(VERSION 3.10.0)
 
 project(<project name> VERSION 0.1.0)
 
-add_executable(test test.cpp) #This is the testing executable
-target_link_libraries(test PRIVATE GTest::Main) #Link it to the google test library
+add_executable(<test target name> test.cpp) #This is the testing executable
+target_link_libraries(<test target name> PRIVATE GTest::gtest GTest::gtest_main) #Link it to the google test library
 ```
 
 #### Integration with Visual Studio
 
 #### Integration with CLion
+CLion has test adaptors built-in so it should automatically detect the test whether you are using `CTest` as runner or just simply compiling a testing executable.
+- With `CTest`
+  ![](screenshots/UnitTest/GTest/CLionCTest.png)
+- Without `CTest`
+  ![](sceenshots/UnitTest/GTest/../../../screenshots/UnitTest/GTest/CLionWithoutCTest.png)
+
+You can click the `run` button on the left of each `TEST()` macro to run individual test, or click `ctrl+shift+f10` to run all test.
+
+See [here](https://www.jetbrains.com/help/clion/monitoring-and-managing-tests.html#RedebugFailedTests) for more documentation.
 
 #### Integration with VSCode
 You need to use [`CTest`](#google-test) (the first version of the minimum `CMakeLists.txt`) as your test runner to get the integration working.
