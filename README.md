@@ -519,12 +519,6 @@ You can get google test by these ways
   ```
   pacman -S pacman -S mingw-w64-x86_64-gtest
   ```
-  After that, add the following lines to your `CMakeLists.txt`:
-  ```cmake
-  find_package(GTest REQUIRED)
-  target_link_libraries(<Your target> PRIVATE GTest::gtest GTest::gtest_main)
-  ```
-  ![](screenshots/UnitTest/GTest/MSYS2.VSCode.png)
 
 After installing the library,
 - If you use Visual Studio (MSBuild Project), you just need to `#include <gtest/gtest.h>` like a normal C++ source file and either:
@@ -548,7 +542,7 @@ After installing the library,
       ```
       ![](screenshots/UnitTest/GTest/VSBuildMain.png)
       
-      2. Click the configuration menu to `Release` and also add these 2 lines, like this
+      1. Click the configuration menu to `Release` and also add these 2 lines, like this
       ```
       gtest.lib
       $(VcpkgRoot)installed\$(VcpkgTriplet)\lib\manual-link\gtest_main.lib
