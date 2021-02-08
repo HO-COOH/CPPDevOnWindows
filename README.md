@@ -15,6 +15,7 @@ Now, you have found the right guide! This guide aims to provide the fullest list
         - [Install GCC](#install-gcc)
         - [Install Clang](#install-clang)
         - [What is MSYS2 and Why?](#what-is-msys2-and-why)
+        - [What's the difference between `/usr/bin` and `/mingw64/bin`](#whats-the-difference-between-usrbin-and-mingw64bin)
       - [MSVC](#msvc)
     - [Download & Install CMake](#download--install-cmake)
       - [What is CMake and Why?](#what-is-cmake-and-why)
@@ -38,11 +39,15 @@ Now, you have found the right guide! This guide aims to provide the fullest list
     - [Debugging in Visual Studio](#debugging-in-visual-studio)
     - [Debugging in QT](#debugging-in-qt)
     - [Debugging in Cevelop](#debugging-in-cevelop)
+    - [Debugging in Sublime Text](#debugging-in-sublime-text)
   - [Using libraries](#using-libraries)
     - [Setting up vcpkg](#setting-up-vcpkg)
     - [Using a library](#using-a-library)
   - [Unit Testing](#unit-testing)
     - [Google Test](#google-test)
+      - [Integration with Visual Studio](#integration-with-visual-studio)
+      - [Integration with CLion](#integration-with-clion)
+      - [Integration with VSCode](#integration-with-vscode)
     - [Microsoft Unit Test](#microsoft-unit-test)
     - [CTest](#ctest)
   - [Documentation](#documentation)
@@ -164,6 +169,14 @@ And type `y` to also install ``gdb``.
 
 8. Click ``OK`` to close all windows. Now you finished installing clang. Open any shell such as `cmd` and type in `clang --version` and you shall see the following: ![](screenshots/Compiler/clang/clang-version.png)
 
+(9. Optional): If you want to get clang's implementation of the C++ standard library (ie. the STL), type this command:
+    ```
+    pacman -S mingw-w64-x86_64-libc++
+    ``` 
+    When invoking `clang++`, add the flag `-stdlib=libc++`. 
+    The header files of `libc++` will be stored at  `C:\msys64\mingw64\include\c++\v1`.
+
+
 Note: `Clang` and `GCC` is installed to the same directory, eg. under `C:\msys64\mingw64\bin`. Don't be confused by the directory `C:\msys64\clang64`. It is an empty folder.
 
 ##### What is MSYS2 and Why?
@@ -174,6 +187,12 @@ But basically, we use its implementation of MingW(Minimalist GNU for Windows), w
 **And please DO NOT follow [this guide](https://code.visualstudio.com/docs/cpp/config-mingw) on Vscode's official tutorial, because the Mingw-w64 project provides an out-dated GCC toolchain.** ![](screenshots/31.png)
 
 MSYS2 is actively maintained and provides an up-to-date GCC toolchain as well as many others.
+
+##### What's the difference between `/usr/bin` and `/mingw64/bin`
+Copied from [this stackoverflow answer](https://stackoverflow.com/questions/49475006/what-is-different-between-gcc-exe-in-msys2-usr-bin-and-gcc-exe-in-msys2-mingww64)
+> The GCC compiler in /usr/bin produces executables that use msys-2.0.dll as a runtime dependency. That DLL is basically a fork of Cygwin, and it provides emulation of POSIX commands not normally available on Windows. That environment is mainly for running programs from the Linux world (like bash) which need POSIX commands and cannot be easily ported to a native Windows environment.
+
+> The GCC compilers in /mingw32/bin and /mingw64/bin produce native Windows executables targeting the 32-bit or 64-bit versions of Windows respectively. The 32-bit executables can actually run on 32-bit or 64-bit Windows. These executables are easier to distribute; you generally just copy all the DLLs that they depend on from the /mingw*/bin folder to the same directory as your executable, and then you have something that will run successfully on other computers. Since the main purpose of MSYS2 is to help write native Windows software, you'll find a much wider variety of libraries in the MinGW environments than in the msys-2.0.dll environment.
 
 #### MSVC
 MSVC is Microsoft Visual C++ compiler. And you know what? You do NOT have to install Visual Studio in order to get MSVC. However, if you also want Visual Studio, skip to [setting up visual studio](#setting-up-visual-studio) directly.
@@ -193,11 +212,21 @@ After MSVC is installed, cmake can detect it as a compiler.
   ![](screenshots/23.png)
 
 ### Download & Install CMake
-1. [Download here](https://cmake.org/download/), choose the ``Windows win64-x64 Installer`` option
+You can either install CMake by using the official installer or using a package manager like `MSYS2`,
+which you used to install `GCC` and `Clang`.
+- Using the installer:
+  1. [Download here](https://cmake.org/download/), choose the ``Windows win64-x64 Installer`` option
 
-2. Launch the insatller, when you see this screen, choose ``Add CMake to the system PATH for all users``
-![](screenshots/6.png)
-Now you finished installing cmake.
+  2. Launch the insatller, when you see this screen, choose ``Add CMake to the system PATH for all users``
+  ![](screenshots/6.png)
+  Now you finished installing cmake.
+- Using `MSYS2`:
+  1. Run `MSYS2` and type this command and type `Y` to install
+   ```
+   pacman -S mingw-w64-x86_64-cmake
+   ```
+  2. Search for ``environment variable`` and open it -> ``Environment Variables``, find ``Path`` in ``System variables``, double click to open the setting -> click ``New`` and copy ``C:\msys64\usr\bin`` to the new entry.
+  ![](screenshots/SourceControl/Git.png)
 
 #### What is CMake and Why?
 CMake is a cross-platform build-system generator, which generates build files (some files dictating how your source files should be built) for your platform. 
@@ -306,8 +335,8 @@ If you install Visual Studio as a standalone IDE without installing MSVC compile
 
 4. Run Visual Studio, select `Create a new project` -> `CMake Project` -> select `Place Project under the same directory` -> `Create`, like this:
   ![](screenshots/IDE/VisualStudio/CreateProject.png)
-   ![](screenshots/IDE/VisualStudio/CMakeProject1.png)
-   ![](screenshots/IDE/VisualStudio/CMakeProject2.png)
+  ![](screenshots/IDE/VisualStudio/CMakeProject1.png)
+  ![](screenshots/IDE/VisualStudio/CMakeProject2.png)
 5. Visual Studio will auto generate a "Hello world" project for you, and it can successfully configure the project and compile because CMake can detect the installed `GCC`. However, it will have incorrect include errors.
    ![](screenshots/IDE/VisualStudio/CMakeProject3.png)
 6. To solve this error, click on the configuration menu -> `Manage Configurations` -> click the add button -> select `Mingw64-Debug` -> click on the previous old configuration and click delete button
@@ -361,13 +390,21 @@ Rememeber to click ``Allow`` when cmake want to configure the intellisense.
 
 
 #### Setting up Sublime
+1. Download Sublime [here](https://www.sublimetext.com/) and it can be installed by clicking `Next`.
+2. Hit `ctrl+shift+p` to open the command platte and then type `Install Package`, wait for the packages list to show up and then type `CMakeBuilder`.
+3. Open the `<project>.sublime_project` file and edit the target named `<project>
+4. Install the plugin [EasyClangComplete]
 
 #### Setting up Atom
-
+1. Download Atom [here](https://atom.io/) and it can be installed by clicking `Next`.
+2. 
 
 ## Source control
-
-Most if not all of the development workflow involves using `Git`. Also, some of CMake's functionalities requires Git to be installed. And you also need Git to install `vcpkg`. You can install `Git` either by using the installer or using a package manager, like `MSYS2` which we just used above to install `GCC` and `Clang`. 
+Most if not all of the development workflow involves using `Git`.
+Also, some of CMake's functionalities requires Git to be installed.
+And you also need Git to install `vcpkg`. 
+You can install `Git` either by using the installer or using a package manager, 
+like `MSYS2` which we just used above to install `GCC` and `Clang`. 
 - Install by using the installer
   1. Download the installer [here](https://git-scm.com/download/win) and then it can be installed by keep clicking `Next`.![](screenshots/26.png)
 - Install by using `MSYS2`
@@ -377,7 +414,9 @@ Most if not all of the development workflow involves using `Git`. Also, some of 
     ```
     And then type `Y` to install.
 
-  2. Search for ``environment variable`` and open it -> ``Environment Variables``, find ``Path`` in ``System variables``, double click to open the setting -> click ``New`` and copy ``C:\msys64\usr\bin`` to the new entry.
+  2. Search for ``environment variable`` and open it -> ``Environment Variables``,
+    find ``Path`` in ``System variables``, double click to open the setting -> click ``New`` and copy ``C:\msys64\usr\bin`` to the new entry. 
+    (You don't need to do this again if you installed [CMake using MSYS2](#download--install-cmake))
   ![](screenshots/SourceControl/Git.png)
 
 
@@ -402,14 +441,35 @@ For more, see documentation [here](https://www.jetbrains.com/help/clion/debuggin
 
 ### Debugging in Cevelop
 
+### Debugging in Sublime Text
+
+
 ## Using libraries
 
 ### Setting up vcpkg
 ``vcpkg`` is a C/C++ package manager, which makes using libraries much easier (almost as easy as using ``pip`` in python).
 
+~~You **HAVE TO** install MSVC or Visual Studio on Windows to use `vcpkg`. 
+(Mingw GCC **CAN NOT** be used to build `vcpkg` on Windows at the time being). 
+After [MSVC](#setting-up-msvc) is installed, you can follow the guide [here](https://github.com/microsoft/vcpkg#quick-start-windows)
+ to set it up.~~
 
-You **HAVE TO** install MSVC or Visual Studio on Windows to use `vcpkg`. (Mingw GCC **CAN NOT** be used to build `vcpkg` on Windows at the time being). After [MSVC](#setting-up-msvc) is installed, you can follow the guide [here](https://github.com/microsoft/vcpkg#quick-start-windows) to set it up.
+Starting from [this commit](https://github.com/microsoft/vcpkg/commit/aa60b7efa56a83ead743718941d8b320ef4a05af), `vcpkg` binary can be 
+directly downloaded by running `bootstrap-vcpkg.bat`, you no longer need to [install MSVC](#msvc) to build it!
 
+1. Open a shell(`cmd`) and go to the directory where you want `vcpkg` to be installed. (Something like `C:\` or `C:\dev`)
+2. Type this command:
+   ```
+   git clone https://github.com/microsoft/vcpkg
+   ```
+3. Type this command:
+   ```
+   .\vcpkg\bootstrap-vcpkg.bat
+   ```
+4. Type this command:
+   ```
+   .\vcpkg\vcpkg integrate install
+   ```
 
 ### Using a library
 After you install the library in `vcpkg`, you either:
@@ -465,6 +525,85 @@ You can get google test by these ways
   target_link_libraries(<Your target> PRIVATE GTest::Main)
   ```
   ![](screenshots/UnitTest/GTest/MSYS2.VSCode.png)
+
+After installing the library,
+- If you use Visual Studio (MSBuild Project), you just need to `#include <gtest/gtest.h>` like a normal C++ source file and either:
+  + Provide a `main` function at the bottom of your source file
+    ```cpp
+    int main(int argc, char **argv) 
+    {
+        ::testing::InitGoogleTest(&argc, argv);
+        return RUN_ALL_TESTS();
+    }
+    ```
+    ![](screenshots/Gtest/../UnitTest/GTest/VSBuild.png)
+  + Don't provide a `main` function, then you need to link additional libraries in the linker settings.
+      1. Right click on your project -> `Properties` -> `Linker` -> `AdditionalDependencies`, 
+      Make sure this configuration is `Debug` and `x64` 
+      (or x86 depend on the architect or your installed Gtest library)
+      and add these 2 lines
+      ```
+      gtestd.lib
+      $(VcpkgRoot)installed\$(VcpkgTriplet)\debug\lib\manual-link\gtest_maind.lib
+      ```
+      ![](screenshots/UnitTest/GTest/VSBuildMain.png)
+      
+      2. Click the configuration menu to `Release` and also add these 2 lines, like this
+      ```
+      gtest.lib
+      $(VcpkgRoot)installed\$(VcpkgTriplet)\lib\manual-link\gtest_main.lib
+      ```
+      ![](screenshots/UnitTest/Gtest/VSBuildMainRelease2.png)
+    
+    Then you should be able to write the test source file without the `main` function, and build in both configurations like this
+    - Debug build
+    ![](screenshots/UnitTest/GTest/VSBuildMain2.png)
+    - Release build
+    ![](screenshots/UnitTest/GTest/VSBuildMainRelease.png)
+
+- If you use CMake, you can make use of `CTest` built-in to Cmake as a test runner to run your google test,
+   which is supported by most IDE/editors you will see below. A minimum `CMakeLists.txt` is like:
+```cmake
+cmake_minimum_required(VERSION 3.10.0)
+
+project(<project name> VERSION 0.1.0)
+
+find_package(GTest REQUIRED)
+enable_testing()
+include(GoogleTest) #for gtest_discover_tests() function
+
+add_executable(test test.cpp) #This is the testing executable
+target_link_libraries(test PRIVATE GTest::Main) #Link it to the google test library
+gtest_discover_tests(test)  #integrate google test with ctest to this testing executable
+```
+- Or you simply want a testing executable, so you don't bother with `CTest`.
+```cmake
+cmake_minimum_required(VERSION 3.10.0)
+
+project(<project name> VERSION 0.1.0)
+
+add_executable(test test.cpp) #This is the testing executable
+target_link_libraries(test PRIVATE GTest::Main) #Link it to the google test library
+```
+
+#### Integration with Visual Studio
+
+#### Integration with CLion
+
+#### Integration with VSCode
+You need to use [`CTest`](#google-test) (the first version of the minimum `CMakeLists.txt`) as your test runner to get the integration working.
+1. Install the [Test Explorer UI](https://marketplace.visualstudio.com/items?itemName=hbenl.vscode-test-explorer) plugin 
+2. Install the [CMake Test Explorer](https://marketplace.visualstudio.com/items?itemName=fredericbonnet.cmake-test-adapter) plugin
+3. Open VSCode settings, go to `Extension` -> `CMake Test Explorer` section, and change these following settings:
+   - Build Config: `${buildType}`
+   - Build Dir: `${buildDirectory}`
+   - Select Cmake Integration
+  ![](screenshots/UnitTest/GTest/VSCodeIntegration.png)
+4. After that, build your project once and then click the `refresh test` button, this plugin should find all the testing suites and test cases in your test files.
+   ![](screenshots/UnitTest/GTest/VSCodeIntegration2.png)
+5. Then you can easily manage or debug all your test cases or each individual test in this panel.
+   ![](screenshots/UnitTest/GTest/VSCodeIntegration3.png)
+
 
 ### Microsoft Unit Test
 
