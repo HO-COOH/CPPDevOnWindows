@@ -30,6 +30,8 @@ Now, you have found the right guide! This guide aims to provide the fullest list
     - [Text editors](#text-editors)
       - [Setting up VSCode](#setting-up-vscode)
       - [Setting up Vim](#setting-up-vim)
+        - [Using MSYS2](#using-msys2)
+        - [Standalone](#standalone)
       - [Setting up Sublime](#setting-up-sublime)
       - [Setting up Atom](#setting-up-atom)
   - [Source control](#source-control)
@@ -52,6 +54,7 @@ Now, you have found the right guide! This guide aims to provide the fullest list
     - [CTest](#ctest)
   - [Documentation](#documentation)
     - [Setting up doxygen](#setting-up-doxygen)
+    - [Integrate doxygen with CMake](#integrate-doxygen-with-cmake)
   - [Setting up a system-wide package manager](#setting-up-a-system-wide-package-manager)
     - [Winget](#winget)
     - [Chocolatey](#chocolatey)
@@ -61,6 +64,9 @@ Now, you have found the right guide! This guide aims to provide the fullest list
     - [Clang-tidy](#clang-tidy)
     - [Clang-format](#clang-format)
     - [Incredibuild](#incredibuild)
+    - [C/C++ include guard (proud contributor)](#cc-include-guard-proud-contributor)
+    - [include-info (proud maker)](#include-info-proud-maker)
+    - [VSCode Font switcher (proud contributor)](#vscode-font-switcher-proud-contributor)
 
 ## Setting up development environment
 This section describes the steps to 
@@ -386,8 +392,57 @@ Rememeber to click ``Allow`` when cmake want to configure the intellisense.
 
 
 #### Setting up Vim
-1. Download and install Vim [here](https://www.vim.org/download.php#pc). It can be installed by keep clicking "Next" in the installer. (Note: Recommended method to install vim is through a package manager, see [here](#setting-up-a-system-wide-package-manager))
+##### Using MSYS2
+1. If you install `vim` in `MSYS2`, your `.vimrc` file should be placed in
+   ```
+   C:\msys64\home\<UserName>\.vimrc
+   ```
+2. Create new folders along this path 
+   ```
+   C:\msys64\home\<UserName>\.vim\autoload
+   ``` 
+   and then open `powershell` here.
+3. Type the following command to install `vim-plug`, a simple vim plugin manager
+   ```
+   iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
+       ni plug.vim -Force
+   ```
 
+##### Standalone
+Download and install Vim [here](https://www.vim.org/download.php#pc). It can be installed by keep clicking "Next" in the installer. (Note: Recommended method to install vim is through a package manager, see [here](#setting-up-a-system-wide-package-manager))
+
+1. Install `vim-plug`
+```
+iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
+    ni $HOME/vimfiles/autoload/plug.vim -Force
+```
+
+Open `.vimrc`, add these following lines:
+```vim
+filetype plugin indent on
+" show existing tab with 4 spaces width
+set tabstop=4
+" when indenting with '>', use 4 spaces width
+set shiftwidth=4
+" On pressing tab, insert 4 spaces
+set expandtab
+syntax on
+set nu
+set smartindent
+
+call plug#begin('~/.vim/plugged')
+
+Plug 'joshdick/onedark.vim'
+Plug 'neoclide/coc.nvim'
+
+call plug#end()
+
+
+colorscheme onedark
+```
+
+2. Install `coc-clangd`
+  Open whatever C++ file, and type command `:CocCommand clangd.install`
 
 #### Setting up Sublime
 1. Download Sublime [here](https://www.sublimetext.com/) and it can be installed by clicking `Next`.
@@ -599,9 +654,8 @@ See [here](https://www.jetbrains.com/help/clion/monitoring-and-managing-tests.ht
 
 #### Integration with VSCode
 You need to use [`CTest`](#google-test) (the first version of the minimum `CMakeLists.txt`) as your test runner to get the integration working.
-1. Install the [Test Explorer UI](https://marketplace.visualstudio.com/items?itemName=hbenl.vscode-test-explorer) plugin 
-2. Install the [CMake Test Explorer](https://marketplace.visualstudio.com/items?itemName=fredericbonnet.cmake-test-adapter) plugin
-3. Open VSCode settings, go to `Extension` -> `CMake Test Explorer` section, and change these following settings:
+1. Install the [CMake Test Explorer](https://marketplace.visualstudio.com/items?itemName=fredericbonnet.cmake-test-adapter) extension (proud contributor)
+2. Open VSCode settings, go to `Extension` -> `CMake Test Explorer` section, and change these following settings:
    - Build Config: `${buildType}`
    - Build Dir: `${buildDirectory}`
    - Select Cmake Integration
@@ -623,7 +677,7 @@ You need to use [`CTest`](#google-test) (the first version of the minimum `CMake
 Writing good documentation is also an essential part of development. The most commonly used documentation generator is [doxygen](https://www.doxygen.nl/download.html). Download `the binary distribution for Windows` and then install it. After it is installed, there will be a GUI frontend called `doxywizard`, which looks like this:
 ![](screenshots/27.png)
 To write good documentation, install these plugins:
-- For [VSCode](https://marketplace.visualstudio.com/items?itemName=cschlosser.doxdocgen)
+- For [VSCode](https://marketplace.visualstudio.com/items?itemName=cschlosser.doxdocgen) (proud contributor)
 - For [Visual Studio](https://marketplace.visualstudio.com/items?itemName=FinnGegenmantel.doxygenComments)
 
 Learn the syntax for documentation [here](https://www.doxygen.nl/index.html)
@@ -635,7 +689,32 @@ After you documment your code, any decent IDEs/text editors should be able to sh
 Using doxygen is straight-forward using the GUI, just specify the root directory of your project, configure some settings to your liking, then run it.
 ![](screenshots/28.png)
 
-Doxygen generated documentation too ugly? Follow the guide [here](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) to use doxygen with sphinx for a more beautiful documentation.
+Doxygen generated documentation too ugly? 
+Follow the guide [here](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) 
+to use doxygen with sphinx for a more beautiful documentation.
+
+### Integrate doxygen with CMake
+You can set up an automatic documentation generation step within CMake, so that each time you build your cmake project,
+the docs would be generated or updated. 
+To do that, assuming you have a `doc` directory in your project, something like this
+```
+MyProject
+|--doc
+|--README.md
+|--CMakeLists.txt
+|...
+```
+ add the following snippet to your root `CMakeLists.txt`
+```cmake
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md")
+    set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/doc")
+    set(DOXYGEN_EXCLUDE_PATTERNS "<your binaries or other files generated by your IDE>")
+    doxygen_add_docs(doc ${CMAKE_SOURCE_DIR} ALL) #this will create a target called "doc"
+    #You can either manually run the target or it will automatically run when "cmake --build ." is called
+endif()
+```
 
 ## Setting up a system-wide package manager
 You thought Windows does not have an easy-to-use package manager? You might be wrong.
@@ -650,11 +729,31 @@ Setting up WSL is the same as setting up a pure linux environment, therefore it 
 ## Addtional Tooling
 
 ### Resharper
-Resharper is a non-free extension for Visual Studio that can greatly benefit your productivity. Download [here](https://www.jetbrains.com/resharper-cpp/).
+is a non-free extension for Visual Studio that can greatly benefit your productivity. Download [here](https://www.jetbrains.com/resharper-cpp/).
 
 ### Clang-tidy
 
 ### Clang-format
 
 ### Incredibuild
+is a free-for-personal-use build tool that accelerate visual studio's project building. 
+It also provides a nice graph to visualize the building process and time consumption of individual files.
 
+![incredibuild](screenshots/incredibuild.png)
+
+It can be installed when [installing visual studio](#setting-up-visual-studio). 
+Download the license [here](https://www.incredibuild.com/free-trial).
+
+### C/C++ include guard (proud contributor)
+is a [VSCode](#setting-up-vscode) extension that automatically add include guard for you so that you no longer need to remember it.
+Download [here](https://marketplace.visualstudio.com/items?itemName=akiramiyakoda.cppincludeguard).
+
+### include-info (proud maker)
+is a [VSCode](#setting-up-vscode) extension that shows the included header file size 
+and provide a fast way to jump to those included files.
+Download [here](https://marketplace.visualstudio.com/items?itemName=HO-COOH.include-info)
+
+
+### VSCode Font switcher (proud contributor)
+is a [VSCode](#setting-up-vscode) extension that provide a fast way to switch between different fonts. 
+Download [here](https://marketplace.visualstudio.com/items?itemName=evan-buss.font-switcher).
