@@ -1,11 +1,17 @@
 # The definitive guide of setting up C/C++ development environment on Windows
-I know a lot of you are having troubles of getting it to work on Windows and complaining a shiton. I will admit, that most C++ programming books do NOT actually tell you how to set things up. And I think that's hilarious, because how are you supposed to program without a working development environment? Even some books do mention it, they usually target Unix operating systems. So what? Can't Windows users properly program in C++? Of course not!
+I know a lot of you are having troubles of getting it to work on Windows and complaining a shiton. 
+I will admit, that most C++ programming books do NOT actually tell you how to set things up. 
+And I think that's hilarious, because how are you supposed to program without a working development environment? 
+Although some books do mention it, they usually target Unix operating systems. 
 
 You can just use [Visual Studio](https://visualstudio.microsoft.com/), which is the best and beginner-friendly solution and has really good documentation from Microsoft, but for some reason you are just a boomer and don't want to use it and you are dumb to set up the alternatives.
 
-Now, you have found the right guide! This guide aims to provide the fullest list of every possible main-stream IDEs/text editors you might want to use and its respective configuration on Windows.
+Now, you have found the right guide! 
+This guide aims to provide the fullest list of every possible main-stream IDEs/text editors you might want to use and its respective configuration on Windows.
 
-**Follow the guide and screenshot carefully.** The screenshot are from Windows Sandbox, which is a clean install of Windows 10. **If you followed everything, and can't get it work, open an issue. Let me see how that's even possible!!** 
+**Follow the guide and screenshot carefully.** 
+The screenshot are from Windows Sandbox, which is a clean install of Windows 10. 
+**If you followed everything, and can't get it work, open an issue. Let me see how that's even possible!!** 
 
 - [The definitive guide of setting up C/C++ development environment on Windows](#the-definitive-guide-of-setting-up-cc-development-environment-on-windows)
   - [Setting up development environment](#setting-up-development-environment)
@@ -58,11 +64,19 @@ Now, you have found the right guide! This guide aims to provide the fullest list
   - [Setting up a system-wide package manager](#setting-up-a-system-wide-package-manager)
     - [Winget](#winget)
     - [Chocolatey](#chocolatey)
+    - [Scoop](#scoop)
   - [Setting up WSL](#setting-up-wsl)
   - [Addtional Tooling](#addtional-tooling)
     - [Resharper](#resharper)
     - [Clang-tidy](#clang-tidy)
-    - [Clang-format](#clang-format)
+      - [Integration with Visual Studio](#integration-with-visual-studio-1)
+        - [MSBuild Project](#msbuild-project)
+        - [CMake Project](#cmake-project)
+      - [Integration with CLion](#integration-with-clion-1)
+      - [Integration with VSCode](#integration-with-vscode-1)
+    - [ClangFormat](#clangformat)
+      - [Integration with Visual Studio](#integration-with-visual-studio-2)
+      - [Integration with VSCode](#integration-with-vscode-2)
     - [Incredibuild](#incredibuild)
     - [C/C++ include guard (proud contributor)](#cc-include-guard-proud-contributor)
     - [include-info (proud maker)](#include-info-proud-maker)
@@ -717,11 +731,25 @@ endif()
 ```
 
 ## Setting up a system-wide package manager
-You thought Windows does not have an easy-to-use package manager? You might be wrong.
+Package manager makes it easier to install and update softwares, 
+allowing you to use one single command to update all installed softwares.
+
+On Windows, there isn't one come by default (actually Microsoft store), 
+but that does NOT mean there aren't good ones.
+
+I recommend installing those frequently updated software that doesn't have a built-in updater
+(like `cmake`, `vim`...)
+using a package manager.
 
 ### Winget
+Install and docs [here](https://docs.microsoft.com/en-us/windows/package-manager/winget/)
 
 ### Chocolatey
+Install and docs [here](https://chocolatey.org/)
+
+### Scoop
+Install and docs [here](https://scoop.sh/)
+
 
 ## Setting up WSL
 Setting up WSL is the same as setting up a pure linux environment, therefore it is not discussed here. 
@@ -732,8 +760,57 @@ Setting up WSL is the same as setting up a pure linux environment, therefore it 
 is a non-free extension for Visual Studio that can greatly benefit your productivity. Download [here](https://www.jetbrains.com/resharper-cpp/).
 
 ### Clang-tidy
+[Clang-tidy](https://clang.llvm.org/extra/clang-tidy/) is a C++ "linter" that provides extra warnings and style checks to your C++ compiler.
 
-### Clang-format
+
+
+#### Integration with Visual Studio
+Clang-Tidy support is available starting in Visual Studio 2019 version 16.4. 
+It's included automatically when you choose a C++ workload in the Visual Studio Installer.
+[More info](https://docs.microsoft.com/en-us/cpp/code-quality/clang-tidy?view=msvc-160).
+
+##### MSBuild Project
+1. Right click on project -> `Properties` -> `Code Analysis` -> `Clang-tidy`
+   ![](screenshots/Tooling/Clang-tidy-msbuild.png)
+2. In `Checks to Enable or Disable`, you can configure checks to be enabled or disabled using supported flags.
+   To enable a check, add the flag name directly. To disable a check, prefix with a `-`.
+   Flags are separated by comma.
+   For example: `*` enables all checks. 
+   `-clang-analyzer-*` disables all checks named `clang-analyzer...`.
+3. Build your project, and you should see warnings provided by clang-tidy.
+   ![](screenshots/Tooling/clang-tidy-msbuild-warning.png)
+
+##### CMake Project
+1. Click on build configuration menu -> `Manage Configuration` -> `Edit JSON`
+   ![](screenshots/Tooling/clang-tidy-cmake-config.png)
+2. Add a key named `enableClangTidyCodeAnalysis` and set value to `true`.
+   Optionally control which checks to be enabled or disabled by adding a key named `clangTidyChecks`
+   ![](screenshots/Tooling/clang-tidy-cmake-config-json.png)
+3. Save and exit. Now you should see warnings provided by clang-tidy.
+   ![](screenshots/Tooling/clang-tidy-cmake-warning.png)
+
+#### Integration with CLion
+
+
+#### Integration with VSCode
+Install [this plugin](https://marketplace.visualstudio.com/items?itemName=notskm.clang-tidy).
+
+
+### ClangFormat
+[ClangFormat](https://clang.llvm.org/docs/ClangFormat.html) is a code formatting tool to help your code follow some pre-defined formatting rules.
+
+In all IDE/editors, the actual ClangFormat executable needs to be installed first.
+
+#### Integration with Visual Studio
+1. Install [this plugin at the bottom "Visual Studio plugin installer"](https://llvm.org/builds/)
+2. Then you can find settings in `Tools` -> `Options` -> `LLVM/Clang` -> `ClangFormat`
+  ![](screenshots/tooling/ClangFormat/ClangFormat-VS.png)
+
+#### Integration with VSCode
+ClangFormat is supported by VSCode C++ extension out-of-the-box.
+ClangFormat settings can be found in C++ extension settings.
+![](screenshots/tooling/ClangFormat/ClangFormat-vscode.png)
+
 
 ### Incredibuild
 is a free-for-personal-use build tool that accelerate visual studio's project building. 
