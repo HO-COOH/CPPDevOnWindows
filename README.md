@@ -38,8 +38,7 @@ The screenshot are from Windows Sandbox, which is a clean install of Windows 10.
       - [Setting up Vim](#setting-up-vim)
         - [Using MSYS2](#using-msys2)
         - [Standalone](#standalone)
-      - [Setting up Sublime](#setting-up-sublime)
-      - [Setting up Atom](#setting-up-atom)
+        - [Optional plugins](#optional-plugins)
   - [Source control](#source-control)
   - [Debugging](#debugging)
     - [Debugging in VSCode](#debugging-in-vscode)
@@ -434,31 +433,59 @@ iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
 Open `.vimrc`, add these following lines:
 ```vim
 filetype plugin indent on
-" show existing tab with 4 spaces width
-set tabstop=4
-" when indenting with '>', use 4 spaces width
-set shiftwidth=4
-" On pressing tab, insert 4 spaces
-set expandtab
+set tabstop=4 " show existing tab with 4 spaces width
+set shiftwidth=4 " when indenting with '>', use 4 spaces width
+set expandtab " On pressing tab, insert 4 spaces
 syntax on
-set nu
+set nu " Enable line numbers 
 set smartindent
 
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.vim/plugged') " List all the plugins to be installed
 
-Plug 'joshdick/onedark.vim'
 Plug 'neoclide/coc.nvim'
 
-call plug#end()
-
-
-colorscheme onedark
+call plug#end() " End of plugins
 ```
 
-2. Install `coc-clangd`
-  Open whatever C++ file, and type command `:CocCommand clangd.install`
+2. Install `coc-clangd`, the C++ language client extension
 
-#### Setting up Sublime
+    Open whatever C++ file, and type command `:CocCommand clangd.install`
+
+3. Install `clangd`, the actual C++ language server.
+  
+    Type command `:CocCommand clangd.install`.
+
+4. Now you should have auto-complete working.
+  ![](screenshots/Editor/vim/clangd.png)
+
+##### Optional plugins
+All the plugins listed below can be installed by adding `Plug '<plugin-repo>'` betweeen the `call plug` and `call plug` lines in the `.vimrc` file.
+1. vim-airline
+  An enhanced status line. 
+  ```vim
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes' 
+  ```
+  ![](screenshots/Editor/vim/airline.png)
+2. nerd-tree
+   A file explorer.
+   ```vim
+   Plug 'preservim/nerdtree'
+   Plug 'Xuyuanp/nerdtree-git-plugin'
+   Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+   Plug 'ryanoasis/vim-devicons'
+   ```
+   ![](screenshots/Editor/vim/nedtree.png)
+
+3. startify
+   A welcome screen for quick opening recent folders and projects
+   ```vim
+   Plug 'mhinz/vim-startify'
+   ```
+   ![](screenshots/Editor/vim/startify.png)
+
+
+<!-- #### Setting up Sublime
 1. Download Sublime [here](https://www.sublimetext.com/) and it can be installed by clicking `Next`.
 2. Hit `ctrl+shift+p` to open the command platte and then type `Install Package`, wait for the packages list to show up and then type `CMakeBuilder`.
 3. Open the `<project>.sublime_project` file and edit the target named `<project>
@@ -466,7 +493,7 @@ colorscheme onedark
 
 #### Setting up Atom
 1. Download Atom [here](https://atom.io/) and it can be installed by clicking `Next`.
-2. 
+2.  -->
 
 ## Source control
 Most if not all of the development workflow involves using `Git`.
@@ -487,7 +514,10 @@ like `MSYS2` which we just used above to install `GCC` and `Clang`.
     find ``Path`` in ``System variables``, double click to open the setting -> click ``New`` and copy ``C:\msys64\usr\bin`` to the new entry. 
     (You don't need to do this again if you installed [CMake using MSYS2](#download--install-cmake))
   ![](screenshots/SourceControl/Git.png)
-
+- Install by using a package manager
+  + chocolatey: `choco install git`
+  + scoop: `scoop install git`
+  + winget: `winget install git`
 
 
 ## Debugging
