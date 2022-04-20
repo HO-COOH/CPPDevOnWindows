@@ -160,7 +160,7 @@ This command will update the packages info, so you get the latest packages. It w
 
 4. Relaunch MSYS2 from your start menu. Type:
 ```
-pacman -S mingw-w64-x86_64-clang
+pacman -S mingw-w64-x86_64-clang mingw-w64-x86_64-clang-tools-extra
 ```
 like this, type `y` and hit enter to install clang
 ![](screenshots/Compiler/clang/clang.png)
