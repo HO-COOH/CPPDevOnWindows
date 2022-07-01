@@ -160,7 +160,7 @@ This command will update the packages info, so you get the latest packages. It w
 
 4. Relaunch MSYS2 from your start menu. Type:
 ```
-pacman -S mingw-w64-x86_64-clang
+pacman -S mingw-w64-x86_64-clang mingw-w64-x86_64-clang-tools-extra
 ```
 like this, type `y` and hit enter to install clang
 ![](screenshots/Compiler/clang/clang.png)
@@ -379,9 +379,10 @@ Note: If for some reason, Visual Studio doesn't detect the right MingW version, 
 2. Launch the installer, when you see this screen, I **strongly recommend you follow this setting**
 ![](screenshots/7.png)
 
-3. Run vscode, in the ``extension`` tab, search and install the following 3 extension
-- This one is for C++ intellisense/syntax highlighting (or whatever)
+3. Run vscode, in the ``extension`` tab, search and install the following extensions
+- Install `C/C++` extension, It is a Language Server by Microsoft. You can also install llvm's LSP `clangd`. From anecdotal experience of 1 year, `clangd` works better.
 ![](screenshots/8.png)
+![](screenshots/34.png)
 - The first one in the list is for syntax highlighting when writing cmake scirpts.
 - The second one in the list is for actually running Cmake.
 ![](screenshots/9.png)
