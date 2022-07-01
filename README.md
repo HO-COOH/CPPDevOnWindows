@@ -110,15 +110,15 @@ pacman -Syu
 `pacman` is the package manager used by MSYS2. `-S` means "sync". `-y` means "download fresh package databases from the server". `-u` means "upgrade installed packages". 
 
 This command will update the packages info, so you get the latest packages. It will prompt you like this, and you type ``y`` and hit enter.
-![](./screenshots/1.png)
+![](./screenshots/Compiler/MSYS2/1.png)
 
-3. Then it will prompt you `` To complete this update all MSYS2 processes including this terminal will be closed. Confirm to proceed [Y/n]``, type `y` and hit enter, and it will close the window after the update is done.
-4. Relaunch MSYS2 from your start menu. Type:
+1. Then it will prompt you `` To complete this update all MSYS2 processes including this terminal will be closed. Confirm to proceed [Y/n]``, type `y` and hit enter, and it will close the window after the update is done.
+2. Relaunch MSYS2 from your start menu. Type:
 ```
 pacman -S mingw-w64-x86_64-gcc
 ```
 like this, type `y` and hit enter to install gcc
-![](screenshots/2.png)
+![](screenshots/Compiler/MSYS2/2.png)
 
 And then type:
 ```
@@ -133,13 +133,13 @@ pacman -S mingw-w64-x86_64-gdb
 And type `y` to also install ``gdb``.
 
 5. Now search for ``environment variable`` and open it
-![](screenshots/3.png)
+![](screenshots/Compiler/MSYS2/3.png)
 
 6. Click ``Environment Variables``, find ``Path`` in ``System variables``, double click to open the setting.
-![](screenshots/4.png)
+![](screenshots/Compiler/MSYS2/4.png)
 
 7. Click ``New`` and copy ``C:\msys64\mingw64\bin`` to the new entry.
-![](screenshots/5.png)
+![](screenshots/Compiler/MSYS2/5.png)
 
 8. Click ``OK`` to close all windows. Now you finished installing GCC. Open any shell such as `cmd` and type in `gcc --version` and you shall see the following: ![](screenshots/Compiler/gcc/gcc-version.png)
 
@@ -153,7 +153,7 @@ pacman -Syu
 `pacman` is the package manager used by MSYS2. `-S` means "sync". `-y` means "download fresh package databases from the server". `-u` means "upgrade installed packages". 
 
 This command will update the packages info, so you get the latest packages. It will prompt you like this, and you type ``y`` and hit enter.
-![](./screenshots/1.png)
+![](./screenshots/Compiler/MSYS2/1.png)
 
 3. Then it will prompt you `` To complete this update all MSYS2 processes including this terminal will be closed. Confirm to proceed [Y/n]``, type `y` and hit enter, and it will close the window after the update is done.
 
@@ -178,13 +178,13 @@ pacman -S mingw-w64-x86_64-gdb
 And type `y` to also install ``gdb``.
 
 5. Now search for ``environment variable`` and open it
-![](screenshots/3.png)
+![](screenshots/Compiler/MSYS2/3.png)
 
 6. Click ``Environment Variables``, find ``Path`` in ``System variables``, double click to open the setting.
-![](screenshots/4.png)
+![](screenshots/Compiler/MSYS2/4.png)
 
 7. Click ``New`` and copy ``C:\msys64\mingw64\bin`` to the new entry.
-![](screenshots/5.png)
+![](screenshots/Compiler/MSYS2/5.png)
 
 8. Click ``OK`` to close all windows. Now you finished installing clang. Open any shell such as `cmd` and type in `clang --version` and you shall see the following: ![](screenshots/Compiler/clang/clang-version.png)
 
@@ -203,7 +203,7 @@ Note: `Clang` and `GCC` is installed to the same directory, eg. under `C:\msys64
 
 But basically, we use its implementation of MingW(Minimalist GNU for Windows), which is a collection of common developing tools seen on GNU/Linux operating systems. 
 
-**And please DO NOT follow [this guide](https://code.visualstudio.com/docs/cpp/config-mingw) on Vscode's official tutorial, because the Mingw-w64 project provides an out-dated GCC toolchain.** ![](screenshots/31.png)
+**And please DO NOT follow [this guide](https://code.visualstudio.com/docs/cpp/config-mingw) on Vscode's official tutorial, because the Mingw-w64 project provides an out-dated GCC toolchain.** ![](screenshots/Mingw_Installer.png)
 
 MSYS2 is actively maintained and provides an up-to-date GCC toolchain as well as many others.
 
@@ -217,7 +217,7 @@ Copied from [this stackoverflow answer](https://stackoverflow.com/questions/4947
 MSVC is Microsoft Visual C++ compiler. And you know what? You do NOT have to install Visual Studio in order to get MSVC. However, if you also want Visual Studio, skip to [setting up visual studio](#setting-up-visual-studio) directly.
 1. Download [MSVC](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019), select `Build Tools for Visual Studio 2019`
 2. Launch the installer and select these workflows
-  ![](screenshots/32.png)
+  ![](screenshots/Compiler/MSVC/Installer.png)
 3. You have finished installing MSVC. Click `Launch` and type `cl` and you should see this:
   ![](screenshots/Compiler/MSVC/InstallFinish.png)
   
@@ -227,8 +227,8 @@ MSVC is Microsoft Visual C++ compiler. And you know what? You do NOT have to ins
 
 
 After MSVC is installed, cmake can detect it as a compiler.
-  ![](screenshots/22.png)
-  ![](screenshots/23.png)
+  ![](screenshots/Compiler/MSVC/Cmake_VSCode.png)
+  ![](screenshots/Compiler/MSVC/Cmake_Clion.png)
 
 ### Download & Install CMake
 You can either install CMake by using the official installer or using a package manager like `MSYS2`,
@@ -237,7 +237,7 @@ which you used to install `GCC` and `Clang`.
   1. [Download here](https://cmake.org/download/), choose the ``Windows win64-x64 Installer`` option
 
   2. Launch the insatller, when you see this screen, choose ``Add CMake to the system PATH for all users``
-  ![](screenshots/6.png)
+  ![](screenshots/CMake_Installer.png)
   Now you finished installing cmake.
 - Using `MSYS2`:
   1. Run `MSYS2` and type this command and type `Y` to install
@@ -267,18 +267,18 @@ This guide will cover setting up `Visual Studio`, `CLion`, `QtCreator`, `Cevelop
 #### Setting up CLion
 1. Download [clion](https://www.jetbrains.com/clion/download/#section=windows)
 2. Launch the installer, keep clicking "Next". When you see the following screen, I strongly recommend you to select ``Add "Open Folder as Project"``.
-![](screenshots/17.png)
+![](screenshots/IDE/CLion/Install_1.png)
 
-3. Run clion, set up the appearance as you like, login your account or free trial.
+1. Run clion, set up the appearance as you like, login your account or free trial.
 
-4. After those, it will prompt this window for setting up compilers, it should be all correct and no need to change.
-![](screenshots/18.png)
+2. After those, it will prompt this window for setting up compilers, it should be all correct and no need to change.
+![](screenshots/IDE/CLion/Install_2.png)
 
-5. Create a new C++ executable or C executable on the left
-![](screenshots/20.png)
+1. Create a new C++ executable or C executable on the left
+![](screenshots/IDE/CLion/NewProject.png)
 
-6. Clion will auto generate a "Hello world" project and everything should be working.
-![](screenshots/19.png)
+1. Clion will auto generate a "Hello world" project and everything should be working.
+![](screenshots/IDE/CLion/Functioning.png)
 
 #### Setting up QT creator
 1. Download QT installer [here](https://www.qt.io/download-qt-installer?hsCtaTracking=99d9dd4f-5681-48d2-b096-470725510d34%7C074ddad0-fdef-4e53-8aa8-5e8a876d6ab4)
@@ -309,7 +309,7 @@ If you installed `Clang` you shall see it in the compiler selection menu:
 2. Download [Cevelop](https://cevelop.com/download/), select `Windows`.
 3. Extract Cevelop and run `cevelop.exe`
    
-   If you see this ![](screenshots/33.png), you may incorrectly installed the 32 bit version of Java Runtime Environment! Go back and reinstalled the 64 bit version!
+   If you see this ![](screenshots/IDE/Cevelop/Error.png), you may incorrectly installed the 32 bit version of Java Runtime Environment! Go back and reinstalled the 64 bit version!
 
 4. The first time running it, it will prompt you to choose a default workspace directory. Change it to where you like. Click `File` -> `New` -> `C/C++ Project` -> `CMake Project` -> `Finish` like this:
    ![](screenshots/IDE/Cevelop/NewProject1.png)
@@ -325,7 +325,7 @@ You can install Visual Studio as a standalone IDE or as a whole package includin
 1. Download [Visual studio](https://visualstudio.microsoft.com/downloads/). Choose the ``Community`` option.
 
 2. Run the installer, select these workflows
-  ![](screenshots/21.png)
+  ![](screenshots/IDE/VisualStudio/Installer.png)
 
 3. After installation, you are prompt to restart your computer. And then you will need to register a Microsoft Account to continue using Visual Studio. 
 
@@ -377,32 +377,34 @@ Note: If for some reason, Visual Studio doesn't detect the right MingW version, 
 #### Setting up VSCode
 1. Download [vscode](https://code.visualstudio.com/)
 2. Launch the installer, when you see this screen, I **strongly recommend you follow this setting**
-![](screenshots/7.png)
+![](screenshots/Editor/VSCode/Installer.png)
 
 3. Run vscode, in the ``extension`` tab, search and install the following extensions
-- Install `C/C++` extension, It is a Language Server by Microsoft. You can also install llvm's LSP `clangd`. From anecdotal experience of 1 year, `clangd` works better.
-![](screenshots/8.png)
-![](screenshots/34.png)
-- The first one in the list is for syntax highlighting when writing cmake scirpts.
+- Install `Microsoft C/C++` extension, It is a Language Server by Microsoft. You can also install llvm's LSP `clangd`. `clangd` will have limitions when using with Visual Studio as CMake's generator. [See the discussion here](https://github.com/HO-COOH/CPPDevOnWindows/pull/3).
+![](screenshots/Editor/VSCode/Extension_Cpp.png)
+![](screenshots/Editor/VSCode/Extension_Clangd.png)
+- And 2 extensions for cmake. The first one in the list is for syntax highlighting when writing cmake scirpts.
 - The second one in the list is for actually running Cmake.
-![](screenshots/9.png)
+![](screenshots/Editor/VSCode/Extension_Cmake.png)
 
 4. Go to settings, search ``generator``. And set ``Cmake:Generator`` to ``MinGW Makefiles``, like this:
-![](screenshots/12.png)
+![](screenshots/Editor/VSCode/Extension_Cmake_Setting.png)
 
-5. Create a folder, open it in vscode. Use ``ctrl + shift + p`` to open the command menu, type ``cmake`` and choose ``CMake: Quick Start``, like this:
-![](screenshots/10.png)
+1. Create a folder, open it in vscode. Use ``ctrl + shift + p`` to open the command menu, type ``cmake`` and choose ``CMake: Quick Start``, like this:
+![](screenshots/Editor/VSCode/Cmake_QuickStart.png)
 
 6. The cmake tool will scan the kits and there will be 2 kits. Select the first one.
-![](screenshots/11.png)
+![](screenshots/Editor/VSCode/CMake_Kit.png)
 
 7. Type a name for your project, select ``Executable``, CMake tool will automatically generate a helloworld project for you. And you probably don't want to enable ctest for now, so delete everything excpet the following 3 lines:
-![](screenshots/14.png)
+![](screenshots/Editor/vscode/CMake_Quick.png)
+
 Rememeber to click ``Allow`` when cmake want to configure the intellisense.
 
 8. And now you can run it and debug it, and have everything working (syntax highlighting, auto complete, header files...).
-![](screenshots/15.png)
-![](screenshots/16.png) 
+![](screenshots/Editor/VSCode/Cmake_Project.png)
+![](screenshots/Editor/VSCode/Cmake_Run.png)
+![](screenshots/Editor/Vscode/Cmake_Debug.png) 
 
 
 #### Setting up Vim
@@ -503,7 +505,7 @@ And you also need Git to install `vcpkg`.
 You can install `Git` either by using the installer or using a package manager, 
 like `MSYS2` which we just used above to install `GCC` and `Clang`. 
 - Install by using the installer
-  1. Download the installer [here](https://git-scm.com/download/win) and then it can be installed by keep clicking `Next`.![](screenshots/26.png)
+  1. Download the installer [here](https://git-scm.com/download/win) and then it can be installed by keep clicking `Next`.![](screenshots/SourceControl/Installer.png)
 - Install by using `MSYS2`
   1. Run `MSYS2`, type in the command
     ```
@@ -541,7 +543,6 @@ For more, see documentation [here](https://www.jetbrains.com/help/clion/debuggin
 
 ### Debugging in Cevelop
 
-### Debugging in Sublime Text
 
 
 ## Using libraries
@@ -584,14 +585,14 @@ Below is a complete example of using `vcpkg` to install and use the [boost](http
    ```
    Note that `vcpkg` will build 32 bit libraries by default on Windows (although it's 64 bit on Linux by default,~~Microsoft fix it please~~), which is NOT probably what you want, so you want to speficy the architecture by adding `:x64-windows`.
    And you should see the following
-   ![](screenshots/24.png)
+   ![](screenshots/vcpkg/vcpkg_install.png)
 
 2. Note that on Windows, `vcpkg` builds libraries using `MSVC`, so you should also use `MSVC` in order to link sucessfully. Header-only libraries like `boost` may be used with other compilers like `GCC`.
 
 Afrer the library finishes installing, you can either:
 
 - Use it in Visual Studio without doing any additional configuration
-  ![](screenshots/25.png)
+  ![](screenshots/vcpkg/vcpkg_VisualStudioIntegration.png)
   **Note: Configure the solution achitectural target correctly according to your library. Visual Studio empty project defaults to `x86` but you may installed `x64` library.**
 
 - Or use it in VSCode/CLion with cmake and cmake tool chain file. See the docs [here](https://github.com/microsoft/vcpkg#using-vcpkg-with-cmake)
@@ -720,7 +721,7 @@ You need to use [`CTest`](#google-test) (the first version of the minimum `CMake
 
 ### Setting up doxygen
 Writing good documentation is also an essential part of development. The most commonly used documentation generator is [doxygen](https://www.doxygen.nl/download.html). Download `the binary distribution for Windows` and then install it. After it is installed, there will be a GUI frontend called `doxywizard`, which looks like this:
-![](screenshots/27.png)
+![](screenshots/Doxygen/Doxygen_Start.png)
 To write good documentation, install these plugins:
 - For [VSCode](https://marketplace.visualstudio.com/items?itemName=cschlosser.doxdocgen) (proud contributor)
 - For [Visual Studio](https://marketplace.visualstudio.com/items?itemName=FinnGegenmantel.doxygenComments)
@@ -728,11 +729,11 @@ To write good documentation, install these plugins:
 Learn the syntax for documentation [here](https://www.doxygen.nl/index.html)
 
 After you documment your code, any decent IDEs/text editors should be able to show the documentation, helping you better understand your own code as well as others.
-![](screenshots/29.png)
-![](screenshots/30.png)
+![](screenshots/Doxygen/Doxygen_VsCode.png)
+![](screenshots/Doxygen/Doxygen_VisualStudio.png)
 
 Using doxygen is straight-forward using the GUI, just specify the root directory of your project, configure some settings to your liking, then run it.
-![](screenshots/28.png)
+![](screenshots/Doxygen/Doxygen_Generate.png)
 
 Doxygen generated documentation too ugly? 
 Follow the guide [here](https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/) 
