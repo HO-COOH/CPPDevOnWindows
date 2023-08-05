@@ -13,42 +13,75 @@ This guide aims to provide the fullest list of every possible main-stream IDEs/t
 The screenshot are from Windows Sandbox, which is a clean install of Windows 10. 
 **If you followed everything, and can't get it work, open an issue. Let me see how that's even possible!!** 
 
+A visual summary of this guide:
+```mermaid
+flowchart TD
+    A[Start]
+    A-->Compiler{Compiler}
+    A-->VisualStudio
+    Compiler-->MSYS2{MSYS2}
+    MSYS2--->GCC
+    MSYS2--->Clang
+    Compiler-->MSVC
+
+    GCC-->CMake
+    Clang-->CMake
+    MSVC-->CMake
+
+    CMake-->IDE{IDE}
+    IDE-->VisualStudio
+    IDE-->QtCreator
+    IDE-->CLion
+
+    CMake-->Editor{Text Editor}
+    Editor-->Vim
+    Editor-->VSCode[Visual Studio Code]
+    
+    GTest[Google test & Doxygen]-. integrate .->VisualStudio
+    GTest[Google test & Doxygen]-. integrate .->VSCode
+    GTest[Google test & Doxygen]-. integrate .->CLion
+    GTest[Google test & Doxygen]-. integrate .->CMake
+
+    subgraph tooling
+    Additional[Additional tooling]---ReSharper
+    Additional---ClangTidy
+    Additional---ClangFormat
+    Additional---Incredibuild
+    end
+```
+
 - [The definitive guide of setting up C/C++ development environment on Windows](#the-definitive-guide-of-setting-up-cc-development-environment-on-windows)
   - [Setting up development environment](#setting-up-development-environment)
-    - [Download & Install a C++ compiler](#download--install-a-c-compiler)
-      - [GCC & Clang](#gcc--clang)
-        - [Download & Install MSYS2](#download--install-msys2)
+    - [Download \& Install a C++ compiler](#download--install-a-c-compiler)
+      - [GCC \& Clang](#gcc--clang)
+        - [Download \& Install MSYS2](#download--install-msys2)
         - [Install GCC](#install-gcc)
         - [Install Clang](#install-clang)
         - [What is MSYS2 and Why?](#what-is-msys2-and-why)
         - [What's the difference between `/usr/bin` and `/mingw64/bin`](#whats-the-difference-between-usrbin-and-mingw64bin)
       - [MSVC](#msvc)
-    - [Download & Install CMake](#download--install-cmake)
+    - [Download \& Install CMake](#download--install-cmake)
       - [What is CMake and Why?](#what-is-cmake-and-why)
     - [IDEs](#ides)
       - [Setting up CLion](#setting-up-clion)
       - [Setting up QT creator](#setting-up-qt-creator)
-      - [Setting up Cevelop](#setting-up-cevelop)
       - [Setting up Visual Studio](#setting-up-visual-studio)
         - [Full package](#full-package)
         - [Standalone IDE](#standalone-ide)
-      - [Setting up Eclipse](#setting-up-eclipse)
     - [Text editors](#text-editors)
       - [Setting up VSCode](#setting-up-vscode)
       - [Setting up Vim](#setting-up-vim)
         - [Using MSYS2](#using-msys2)
         - [Standalone](#standalone)
         - [Optional plugins](#optional-plugins)
-  - [Source control](#source-control)
   - [Debugging](#debugging)
     - [Debugging in VSCode](#debugging-in-vscode)
     - [Debugging in CLion](#debugging-in-clion)
     - [Debugging in Visual Studio](#debugging-in-visual-studio)
     - [Debugging in QT](#debugging-in-qt)
-    - [Debugging in Cevelop](#debugging-in-cevelop)
-    - [Debugging in Sublime Text](#debugging-in-sublime-text)
   - [Using libraries](#using-libraries)
     - [Setting up vcpkg](#setting-up-vcpkg)
+    - [Finding and Installing a library](#finding-and-installing-a-library)
     - [Using a library](#using-a-library)
   - [Unit Testing](#unit-testing)
     - [Google Test](#google-test)
@@ -60,6 +93,7 @@ The screenshot are from Windows Sandbox, which is a clean install of Windows 10.
   - [Documentation](#documentation)
     - [Setting up doxygen](#setting-up-doxygen)
     - [Integrate doxygen with CMake](#integrate-doxygen-with-cmake)
+  - [Source control](#source-control)
   - [Setting up a system-wide package manager](#setting-up-a-system-wide-package-manager)
     - [Winget](#winget)
     - [Chocolatey](#chocolatey)
@@ -80,6 +114,7 @@ The screenshot are from Windows Sandbox, which is a clean install of Windows 10.
     - [C/C++ include guard (proud contributor)](#cc-include-guard-proud-contributor)
     - [include-info (proud maker)](#include-info-proud-maker)
     - [VSCode Font switcher (proud contributor)](#vscode-font-switcher-proud-contributor)
+---
 
 ## Setting up development environment
 This section describes the steps to 
@@ -202,10 +237,10 @@ Note: `Clang` and `GCC` is installed to the same directory, eg. under `C:\msys64
 > MSYS2 is a collection of tools and libraries providing you with an easy-to-use environment for building, installing and running native Windows software.
 
 But basically, we use its implementation of MingW(Minimalist GNU for Windows), which is a collection of common developing tools seen on GNU/Linux operating systems. 
+> [!WARNING]
+> **Please DO NOT follow [this guide](https://code.visualstudio.com/docs/cpp/config-mingw) on Vscode's official tutorial, because the Mingw-w64 project provides an out-dated GCC toolchain.** ![](screenshots/Mingw_Installer.png)
 
-**And please DO NOT follow [this guide](https://code.visualstudio.com/docs/cpp/config-mingw) on Vscode's official tutorial, because the Mingw-w64 project provides an out-dated GCC toolchain.** ![](screenshots/Mingw_Installer.png)
-
-MSYS2 is actively maintained and provides an up-to-date GCC toolchain as well as many others.
+MSYS2 (in this guide) is actively maintained and provides an up-to-date GCC toolchain as well as many others, is the prefered choice.
 
 ##### What's the difference between `/usr/bin` and `/mingw64/bin`
 Copied from [this stackoverflow answer](https://stackoverflow.com/questions/49475006/what-is-different-between-gcc-exe-in-msys2-usr-bin-and-gcc-exe-in-msys2-mingww64)
@@ -304,20 +339,6 @@ If you installed `Clang` you shall see it in the compiler selection menu:
 
 ![](screenshots/IDE/QT/Kits.png)
 
-#### Setting up Cevelop
-1. Download and install [Java Runtime Environment](https://www.java.com/en/download/manual.jsp), select `Windows Offline (64bit)`
-2. Download [Cevelop](https://cevelop.com/download/), select `Windows`.
-3. Extract Cevelop and run `cevelop.exe`
-   
-   If you see this ![](screenshots/IDE/Cevelop/Error.png), you may incorrectly installed the 32 bit version of Java Runtime Environment! Go back and reinstalled the 64 bit version!
-
-4. The first time running it, it will prompt you to choose a default workspace directory. Change it to where you like. Click `File` -> `New` -> `C/C++ Project` -> `CMake Project` -> `Finish` like this:
-   ![](screenshots/IDE/Cevelop/NewProject1.png)
-   ![](screenshots/IDE/Cevelop/NewProject2.png)
-   ![](screenshots/IDE/Cevelop/NewProject3.png)
-
-5. Click `Run` to run.
-   ![](screenshots/IDE/Cevelop/RunProject.png)
 
 #### Setting up Visual Studio
 You can install Visual Studio as a standalone IDE or as a whole package including compiler, toolchain and windows sdk.
@@ -370,10 +391,7 @@ Note: If for some reason, Visual Studio doesn't detect the right MingW version, 
 ![](screenshots/IDE/VisualStudio/CMakeProject8.png)
 
 
-#### Setting up Eclipse
-
 ### Text editors
-
 #### Setting up VSCode
 1. Download [vscode](https://code.visualstudio.com/)
 2. Launch the installer, when you see this screen, I **strongly recommend you follow this setting**
@@ -498,29 +516,7 @@ All the plugins listed below can be installed by adding `Plug '<plugin-repo>'` b
 1. Download Atom [here](https://atom.io/) and it can be installed by clicking `Next`.
 2.  -->
 
-## Source control
-Most if not all of the development workflow involves using `Git`.
-Also, some of CMake's functionalities requires Git to be installed.
-And you also need Git to install `vcpkg`. 
-You can install `Git` either by using the installer or using a package manager, 
-like `MSYS2` which we just used above to install `GCC` and `Clang`. 
-- Install by using the installer
-  1. Download the installer [here](https://git-scm.com/download/win) and then it can be installed by keep clicking `Next`.![](screenshots/SourceControl/Installer.png)
-- Install by using `MSYS2`
-  1. Run `MSYS2`, type in the command
-    ```
-    pacman -S git
-    ```
-    And then type `Y` to install.
-
-  2. Search for ``environment variable`` and open it -> ``Environment Variables``,
-    find ``Path`` in ``System variables``, double click to open the setting -> click ``New`` and copy ``C:\msys64\usr\bin`` to the new entry. 
-    (You don't need to do this again if you installed [CMake using MSYS2](#download--install-cmake))
-  ![](screenshots/SourceControl/Git.png)
-- Install by using a package manager
-  + chocolatey: `choco install git`
-  + scoop: `scoop install git`
-  + winget: `winget install git`
+--- 
 
 
 ## Debugging
@@ -532,19 +528,20 @@ To launch the debugger in VSCode, click the cmake project menu -> right click on
 See more documentation for VSCode's debugging UI [here](https://code.visualstudio.com/docs/cpp/cpp-debug#_windows-debugging-with-gdb), except for the part that sets `launch.json` because the [CMake](#setting-up-vscode) tools already handles everything :)
 
 ### Debugging in CLion
-To launch the debugger, click here ![](screenshots/IDE/CLion/Debug.png)
+Click here ![](screenshots/IDE/CLion/Debug.png)
 
 For more, see documentation [here](https://www.jetbrains.com/help/clion/debugging-code.html)
 
 ### Debugging in Visual Studio
+Click here ![](screenshots/IDE/VisualStudio/Debugging.png)
 
+For more, see documentation [here](https://learn.microsoft.com/en-us/visualstudio/debugger/debugger-feature-tour?view=vs-2022)
 
 ### Debugging in QT
-
-### Debugging in Cevelop
-
+Click here ![](screenshots/IDE/QT/Debugging.png)
 
 
+---
 ## Using libraries
 
 ### Setting up vcpkg
@@ -569,8 +566,15 @@ directly downloaded by running `bootstrap-vcpkg.bat`, you no longer need to [ins
    ```
 4. Type this command:
    ```
-   .\vcpkg\vcpkg integrate install
+   .\vcpkg\vcpkg.exe integrate install
    ```
+
+### Finding and Installing a library
+- To find a library, use `vcpkg search <library>`
+- To install a library, use `vcpkg install <library>:x64-windows` or `vcpkg install <library>:x86-windows`
+
+> [!NOTE]
+>  `vcpkg` will build 32 bit libraries by default on Windows (although it's 64 bit on Linux by default,~~Microsoft fix it please~~), which is NOT probably what you want, so you want to speficy the architecture by adding `:x64-windows`.
 
 ### Using a library
 After you install the library in `vcpkg`, you either:
@@ -583,7 +587,7 @@ Below is a complete example of using `vcpkg` to install and use the [boost](http
    ```
    vcpkg install boost:x64-windows
    ```
-   Note that `vcpkg` will build 32 bit libraries by default on Windows (although it's 64 bit on Linux by default,~~Microsoft fix it please~~), which is NOT probably what you want, so you want to speficy the architecture by adding `:x64-windows`.
+
    And you should see the following
    ![](screenshots/vcpkg/vcpkg_install.png)
 
@@ -597,6 +601,7 @@ Afrer the library finishes installing, you can either:
 
 - Or use it in VSCode/CLion with cmake and cmake tool chain file. See the docs [here](https://github.com/microsoft/vcpkg#using-vcpkg-with-cmake)
 
+---
 ## Unit Testing
 [What is unit testing?](https://en.wikipedia.org/wiki/Unit_testing)
 
@@ -762,12 +767,26 @@ if(DOXYGEN_FOUND)
 endif()
 ```
 
+---
+## Source control
+Most if not all of the development workflow involves using `Git`.
+Also, some of CMake's functionalities requires Git to be installed.
+And you also need Git to install `vcpkg`. 
+You can install `Git` either by using the installer or using a package manager, 
+like `MSYS2` which we just used above to install `GCC` and `Clang`. 
+- Install by using the installer
+  1. Download the installer [here](https://git-scm.com/download/win) and then it can be installed by keep clicking `Next`.![](screenshots/SourceControl/Installer.png)
+- Install by using a package manager
+  + chocolatey: `choco install git`
+  + scoop: `scoop install git`
+  + winget: `winget install git`
+
+---
 ## Setting up a system-wide package manager
 Package manager makes it easier to install and update softwares, 
 allowing you to use one single command to update all installed softwares.
 
-On Windows, there isn't one come by default (actually Microsoft store), 
-but that does NOT mean there aren't good ones.
+On Windows, there is built-in `winget` on a reasonably new build of Windows 10.
 
 I recommend installing those frequently updated software that doesn't have a built-in updater
 (like `cmake`, `vim`...)
@@ -782,10 +801,11 @@ Install and docs [here](https://chocolatey.org/)
 ### Scoop
 Install and docs [here](https://scoop.sh/)
 
-
+---
 ## Setting up WSL
 Setting up WSL is the same as setting up a pure linux environment, therefore it is not discussed here. 
 
+---
 ## Addtional Tooling
 
 ### Resharper
