@@ -237,8 +237,9 @@ Note: `Clang` and `GCC` is installed to the same directory, eg. under `C:\msys64
 > MSYS2 is a collection of tools and libraries providing you with an easy-to-use environment for building, installing and running native Windows software.
 
 But basically, we use its implementation of MingW(Minimalist GNU for Windows), which is a collection of common developing tools seen on GNU/Linux operating systems. 
+
 > [!WARNING]
-> **Please DO NOT follow [this guide](https://code.visualstudio.com/docs/cpp/config-mingw) on Vscode's official tutorial, because the Mingw-w64 project provides an out-dated GCC toolchain.** ![](screenshots/Mingw_Installer.png)
+> **Please DO NOT use [this Mingw-w64 installer](https://sourceforge.net/projects/mingw-w64/files/), because it uses out-dated GCC toolchain, and is no longer maintained** ![](screenshots/Mingw_Installer.png)
 
 MSYS2 (in this guide) is actively maintained and provides an up-to-date GCC toolchain as well as many others, is the prefered choice.
 
@@ -415,9 +416,17 @@ Note: If for some reason, Visual Studio doesn't detect the right MingW version, 
 ![](screenshots/Editor/VSCode/CMake_Kit.png)
 
 7. Type a name for your project, select ``Executable``, CMake tool will automatically generate a helloworld project for you. And you probably don't want to enable ctest for now, so delete everything excpet the following 3 lines:
-![](screenshots/Editor/vscode/CMake_Quick.png)
 
-Rememeber to click ``Allow`` when cmake want to configure the intellisense.
+![](screenshots/Editor/vscode/CMake_Quick.png)
+```cmake
+cmake_minimum_required(VERSION 3.5.0)
+project(helloworld VERSION 0.1.0)
+
+add_executable(helloworld main.cpp)
+```
+
+> [!IMPORTANT]  
+> Rememeber to click ``Allow`` when cmake want to configure the intellisense.
 
 8. And now you can run it and debug it, and have everything working (syntax highlighting, auto complete, header files...).
 ![](screenshots/Editor/VSCode/Cmake_Project.png)
